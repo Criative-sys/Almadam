@@ -109,8 +109,8 @@
       align-items: center;
     }
 
-    input {
-      flex: 1;
+    input, textarea {
+      width: 100%;
       padding: 14px 16px;
       border: 1px solid #d0d5dd;
       border-radius: 14px;
@@ -118,9 +118,14 @@
       outline: none;
     }
 
-    input:focus {
+    input:focus, textarea:focus {
       border-color: var(--gold);
       box-shadow: 0 0 0 4px rgba(212,166,83,0.18);
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
     }
 
     button {
@@ -132,6 +137,12 @@
       font-weight: bold;
       cursor: pointer;
       font-size: 15px;
+    }
+
+    .eval-btn {
+      padding: 9px 13px;
+      font-size: 13px;
+      border-radius: 10px;
     }
 
     .table-card {
@@ -170,13 +181,8 @@
       font-weight: bold;
     }
 
-    .loading {
-      color: var(--burgundy);
-    }
-
-    .error {
-      color: var(--red);
-    }
+    .loading { color: var(--burgundy); }
+    .error { color: var(--red); }
 
     .badge {
       display: inline-block;
@@ -188,26 +194,97 @@
       font-size: 12px;
     }
 
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 999;
+      padding: 20px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 620px;
+      background: white;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, var(--burgundy), var(--burgundy-dark));
+      color: white;
+      padding: 20px;
+    }
+
+    .modal-header h2 {
+      margin: 0;
+      color: var(--gold);
+    }
+
+    .modal-body {
+      padding: 22px;
+    }
+
+    .player-info {
+      background: #fafafa;
+      border: 1px solid #eee;
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      line-height: 1.8;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px;
+      margin-bottom: 10px;
+      border: 1px solid #eee;
+      border-radius: 14px;
+      background: #fff;
+      cursor: pointer;
+    }
+
+    .check-item input {
+      width: 20px;
+      height: 20px;
+      flex: 0;
+      accent-color: var(--burgundy);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .close-btn {
+      background: #667085;
+    }
+
+    .success-msg {
+      display: none;
+      margin-top: 12px;
+      padding: 13px;
+      border-radius: 12px;
+      background: #ecfdf3;
+      color: #027a48;
+      font-weight: bold;
+      text-align: center;
+    }
+
     @media (max-width: 850px) {
-      .stats {
-        grid-template-columns: 1fr;
-      }
-
-      .toolbar {
-        flex-direction: column;
-      }
-
-      input, button {
-        width: 100%;
-      }
-
-      .table-card {
-        overflow-x: auto;
-      }
-
-      table {
-        min-width: 850px;
-      }
+      .stats { grid-template-columns: 1fr; }
+      .toolbar { flex-direction: column; }
+      input, button { width: 100%; }
+      .table-card { overflow-x: auto; }
+      table { min-width: 950px; }
+      .modal-actions { flex-direction: column; }
     }
   </style>
 </head>
@@ -263,6 +340,7 @@
           <th>رقم الهاتف</th>
           <th>الهوية الإماراتية</th>
           <th>الحالة</th>
+          <th>التقييم</th>
         </tr>
       </thead>
       <tbody id="playersBody"></tbody>
@@ -271,10 +349,61 @@
 
 </div>
 
+<div class="modal" id="evalModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>تقييم المرحلة الأولى 1-A</h2>
+      <p>الرصد الميداني السريع للموهبة الرياضية</p>
+    </div>
+
+    <div class="modal-body">
+      <div class="player-info">
+        <strong>اللاعب:</strong> <span id="modalPlayerName"></span><br>
+        <strong>الهوية:</strong> <span id="modalEmiratesId"></span>
+      </div>
+
+      <label class="check-item">
+        <input type="checkbox" id="activity">
+        الطفل يُقبل على الأنشطة بتلقائية
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" id="fastLearning">
+        يتعلم المهارة الجديدة بسرعة
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" id="focus">
+        يحافظ على التركيز أكثر من 10 دقائق
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" id="competition">
+        يتفاعل إيجابياً مع التنافس
+      </label>
+
+      <label class="check-item">
+        <input type="checkbox" id="balance">
+        يُظهر توازناً فوق المتوسط
+      </label>
+
+      <textarea id="notes" placeholder="ملاحظات المدرب..."></textarea>
+
+      <div class="modal-actions">
+        <button onclick="saveEvaluation()" id="saveEvalBtn">حفظ التقييم</button>
+        <button onclick="closeModal()" class="close-btn">إغلاق</button>
+      </div>
+
+      <div class="success-msg" id="evalMessage">تم حفظ التقييم بنجاح ✅</div>
+    </div>
+  </div>
+</div>
+
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
 
   let allPlayers = [];
+  let selectedPlayer = null;
 
   const statusBox = document.getElementById("status");
   const table = document.getElementById("playersTable");
@@ -325,6 +454,11 @@
         <td>${player["Parent Phone"] || ""}</td>
         <td>${player["Emirates ID"] || ""}</td>
         <td><span class="badge">مسجل</span></td>
+        <td>
+          <button class="eval-btn" onclick='openEvaluation(${JSON.stringify(player)})'>
+            تقييم
+          </button>
+        </td>
       `;
 
       tbody.appendChild(row);
@@ -332,6 +466,66 @@
 
     statusBox.style.display = "none";
     table.style.display = "table";
+  }
+
+  function openEvaluation(player) {
+    selectedPlayer = player;
+
+    document.getElementById("modalPlayerName").textContent = player["Player Name"] || "";
+    document.getElementById("modalEmiratesId").textContent = player["Emirates ID"] || "";
+
+    document.getElementById("activity").checked = false;
+    document.getElementById("fastLearning").checked = false;
+    document.getElementById("focus").checked = false;
+    document.getElementById("competition").checked = false;
+    document.getElementById("balance").checked = false;
+    document.getElementById("notes").value = "";
+    document.getElementById("evalMessage").style.display = "none";
+
+    document.getElementById("evalModal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("evalModal").style.display = "none";
+  }
+
+  async function saveEvaluation() {
+    if (!selectedPlayer) return;
+
+    const btn = document.getElementById("saveEvalBtn");
+    btn.disabled = true;
+    btn.textContent = "جاري الحفظ...";
+
+    const data = new URLSearchParams();
+    data.append("action", "saveStage1Ticks");
+    data.append("playerName", selectedPlayer["Player Name"] || "");
+    data.append("emiratesId", selectedPlayer["Emirates ID"] || "");
+    data.append("activity", document.getElementById("activity").checked);
+    data.append("fastLearning", document.getElementById("fastLearning").checked);
+    data.append("focus", document.getElementById("focus").checked);
+    data.append("competition", document.getElementById("competition").checked);
+    data.append("balance", document.getElementById("balance").checked);
+    data.append("notes", document.getElementById("notes").value);
+
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: data
+      });
+
+      document.getElementById("evalMessage").style.display = "block";
+
+      setTimeout(() => {
+        closeModal();
+      }, 1200);
+
+    } catch (error) {
+      alert("حدث خطأ أثناء حفظ التقييم.");
+    }
+
+    btn.disabled = false;
+    btn.textContent = "حفظ التقييم";
   }
 
   function formatDate(value) {
