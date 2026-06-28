@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>تسجيل المواهب الرياضية | نادي المدام</title>
+
+  <style>
+    :root {
+      --navy: #17365d;
+      --navy-dark: #0d203a;
+      --gold: #d6aa55;
+      --red: #c8192e;
+      --green: #009b5a;
+      --light: #f5f7fb;
+      --white: #ffffff;
+      --text: #1f2937;
+      --muted: #667085;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(rgba(13, 32, 58, 0.88), rgba(13, 32, 58, 0.92)),
+        radial-gradient(circle at top right, rgba(214,170,85,0.35), transparent 35%),
+        linear-gradient(135deg, #17365d, #0d203a);
+      color: var(--text);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 1050px;
+      background: var(--white);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+    }
+
+    .intro {
+      background: linear-gradient(160deg, var(--navy), var(--navy-dark));
+      color: white;
+      padding: 35px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro::before {
+      content: "";
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      background: var(--gold);
+      opacity: 0.13;
+      bottom: -90px;
+      left: -80px;
+    }
+
+    .intro::after {
+      content: "";
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: var(--red);
+      opacity: 0.13;
+      top: -70px;
+      right: -70px;
+    }
+
+    .logos {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 25px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .logos img {
+      width: 90px;
+      height: 90px;
+      object-fit: contain;
+      background: white;
+      padding: 8px;
+      border-radius: 18px;
+    }
+
+    .intro h1 {
+      position: relative;
+      z-index: 2;
+      margin: 10px 0;
+      font-size: 30px;
+      color: var(--gold);
+      line-height: 1.5;
+    }
+
+    .intro h3 {
+      position: relative;
+      z-index: 2;
+      margin: 8px 0 20px;
+      font-weight: normal;
+      color: #eef2f7;
+    }
+
+    .intro p {
+      position: relative;
+      z-index: 2;
+      line-height: 1.9;
+      color: #e5e7eb;
+      font-size: 16px;
+    }
+
+    .badge {
+      position: relative;
+      z-index: 2;
+      display: inline-block;
+      margin-top: 22px;
+      padding: 11px 20px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      font-weight: bold;
+    }
+
+    .form-box {
+      padding: 35px;
+    }
+
+    .form-box h2 {
+      margin: 0 0 8px;
+      color: var(--navy);
+      font-size: 28px;
+    }
+
+    .subtitle {
+      margin-bottom: 25px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--navy);
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid #d0d5dd;
+      border-radius: 14px;
+      padding: 14px 15px;
+      font-size: 15px;
+      outline: none;
+      transition: 0.2s;
+      background: white;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(214,170,85,0.18);
+    }
+
+    .hint {
+      color: #777;
+      font-size: 12px;
+      margin-top: 5px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 8px;
+      font-size: 18px;
+      font-weight: bold;
+      cursor: pointer;
+      color: white;
+      background: linear-gradient(135deg, var(--gold), #b88732);
+      transition: 0.2s;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(214,170,85,0.35);
+    }
+
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      text-align: center;
+      padding: 14px;
+      margin-top: 16px;
+      border-radius: 14px;
+      font-weight: bold;
+      line-height: 1.6;
+    }
+
+    .success {
+      display: block;
+      background: #ecfdf3;
+      color: #027a48;
+      border: 1px solid #abefc6;
+    }
+
+    .error {
+      display: block;
+      background: #fef3f2;
+      color: #b42318;
+      border: 1px solid #fecdca;
+    }
+
+    .footer {
+      margin-top: 18px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    @media (max-width: 850px) {
+      .card {
+        grid-template-columns: 1fr;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .intro {
+        padding: 28px 22px;
+      }
+
+      .form-box {
+        padding: 28px 22px;
+      }
+
+      .intro h1 {
+        font-size: 24px;
+      }
+
+      .logos img {
+        width: 75px;
+        height: 75px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="card">
+
+      <div class="intro">
+        <div class="logos">
+          <img src="logo1.jpeg" alt="Al Madam Club Logo">
+          <img src="SSC.png" alt="Sharjah Sports Council Logo">
+        </div>
+
+        <h1>برنامج اكتشاف المواهب الرياضية</h1>
+        <h3>نادي المدام الثقافي الرياضي</h3>
+
+        <p>
+          التسجيل المبدئي للموهوبين ضمن برنامج اكتشاف وتطوير المواهب الرياضية
+          للفئة العمرية من 8 إلى 12 سنة.
+        </p>
+
+        <div class="badge">صيف عطلتنا غير 2026</div>
+      </div>
+
+      <div class="form-box">
+        <h2>استمارة التسجيل</h2>
+        <p class="subtitle">
+          يرجى تعبئة البيانات التالية بدقة، وسيتم حفظها مباشرة في قاعدة بيانات النادي.
+        </p>
+
+        <form id="talentForm">
+          <div class="grid">
+
+            <div class="field">
+              <label>اسم اللاعب</label>
+              <input type="text" name="playerName" required placeholder="مثال: أحمد محمد علي">
+            </div>
+
+            <div class="field">
+              <label>العمر</label>
+              <input type="number" name="age" required min="8" max="12" placeholder="من 8 إلى 12">
+            </div>
+
+            <div class="field">
+              <label>تاريخ الميلاد</label>
+              <input type="date" name="dob" required>
+            </div>
+
+            <div class="field">
+              <label>اسم ولي الأمر</label>
+              <input type="text" name="parentName" required placeholder="اسم ولي الأمر">
+            </div>
+
+            <div class="field">
+              <label>رقم هاتف ولي الأمر</label>
+              <input type="tel" name="parentPhone" required placeholder="05XXXXXXXX">
+              <div class="hint">يقبل أرقام الإمارات مثل 0501234567 أو 971501234567</div>
+            </div>
+
+            <div class="field">
+              <label>رقم الهوية الإماراتية</label>
+              <input type="text" name="emiratesId" required placeholder="784-XXXX-XXXXXXX-X">
+              <div class="hint">يمكن كتابتها مع الشرطات أو بدونها</div>
+            </div>
+
+          </div>
+
+          <button type="submit" id="submitBtn">إرسال التسجيل</button>
+
+          <div id="message" class="message"></div>
+
+          <div class="footer">
+            جميع البيانات تستخدم لأغراض التسجيل والتقييم الرياضي فقط.
+            <br>
+            نادي المدام الثقافي الرياضي
+          </div>
+        </form>
+      </div>
+
+    </section>
+  </main>
+
+  <script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
+
+    const form = document.getElementById("talentForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const message = document.getElementById("message");
+
+    function showMessage(text, type) {
+      message.textContent = text;
+      message.className = "message " + type;
+    }
+
+    function cleanPhone(phone) {
+      return phone.replace(/\s|-/g, "");
+    }
+
+    function isValidUAEPhone(phone) {
+      phone = cleanPhone(phone);
+      return /^(05\d{8}|9715\d{8}|\+9715\d{8})$/.test(phone);
+    }
+
+    function isValidEmiratesId(id) {
+      id = id.replace(/-/g, "").replace(/\s/g, "");
+      return /^784\d{12}$/.test(id);
+    }
+
+    form.addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      message.style.display = "none";
+
+      const formData = new FormData(form);
+
+      const playerName = formData.get("playerName").trim();
+      const age = Number(formData.get("age"));
+      const dob = formData.get("dob");
+      const parentName = formData.get("parentName").trim();
+      const parentPhone = formData.get("parentPhone").trim();
+      const emiratesId = formData.get("emiratesId").trim();
+
+      if (!playerName || !age || !dob || !parentName || !parentPhone || !emiratesId) {
+        showMessage("يرجى تعبئة جميع الحقول المطلوبة.", "error");
+        return;
+      }
+
+      if (age < 8 || age > 12) {
+        showMessage("العمر المسموح للتسجيل من 8 إلى 12 سنة فقط.", "error");
+        return;
+      }
+
+      if (!isValidUAEPhone(parentPhone)) {
+        showMessage("رقم الهاتف غير صحيح. الرجاء إدخال رقم إماراتي مثل 0501234567.", "error");
+        return;
+      }
+
+      if (!isValidEmiratesId(emiratesId)) {
+        showMessage("رقم الهوية الإماراتية غير صحيح. يجب أن يبدأ بـ 784 ويتكون من 15 رقم.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "جاري الإرسال...";
+
+      try {
+        const data = new URLSearchParams();
+        data.append("playerName", playerName);
+        data.append("age", age);
+        data.append("dob", dob);
+        data.append("parentName", parentName);
+        data.append("parentPhone", cleanPhone(parentPhone));
+        data.append("emiratesId", emiratesId);
+
+        const response = await fetch(SCRIPT_URL, {
+          method: "POST",
+          body: data
+        });
+
+        const result = await response.text();
+
+        if (result.includes("success")) {
+          showMessage("تم إرسال التسجيل بنجاح ✅", "success");
+          form.reset();
+        } else if (result.includes("missing_data")) {
+          showMessage("لم يتم الإرسال، توجد بيانات ناقصة.", "error");
+        } else {
+          showMessage("حدث خطأ أثناء الإرسال. تأكد من إعدادات Apps Script.", "error");
+        }
+
+      } catch (error) {
+        showMessage("تعذر الاتصال بالخادم. جرّب مرة أخرى.", "error");
+      }
+
+      submitBtn.disabled = false;
+      submitBtn.textContent = "إرسال التسجيل";
+    });
+  </script>
+</body>
+</html>
