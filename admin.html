@@ -349,6 +349,7 @@
           <th>رقم الهاتف</th>
           <th>الهوية الإماراتية</th>
           <th>الحالة</th>
+          <th>الملف</th>
           <th>التقييم</th>
         </tr>
       </thead>
@@ -408,6 +409,17 @@
   </div>
 </div>
 
+<div class="modal" id="profileModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>ملف اللاعب</h2>
+      <p>بيانات التسجيل ونتيجة المرحلة الأولى</p>
+    </div>
+
+    <div class="modal-body" id="profileContent"></div>
+  </div>
+</div>
+  
 <script>
   const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
 
@@ -420,6 +432,53 @@
   const totalPlayers = document.getElementById("totalPlayers");
   const searchInput = document.getElementById("searchInput");
 
+  function openProfile(player) {
+  const evaluation = player["Stage1 Evaluation"];
+
+  let evalHtml = "";
+
+  if (evaluation) {
+    evalHtml = `
+      <div class="player-info">
+        <strong>نتيجة المرحلة الأولى:</strong><br>
+        مجموع العلامات: ${evaluation["Total"] || "0"} / 5<br>
+        التصنيف: ${evaluation["Classification"] || ""}<br>
+        الملاحظات: ${evaluation["Notes"] || "لا توجد ملاحظات"}
+      </div>
+    `;
+  } else {
+    evalHtml = `
+      <div class="player-info">
+        <strong>نتيجة المرحلة الأولى:</strong><br>
+        لم يتم التقييم بعد.
+      </div>
+    `;
+  }
+
+  document.getElementById("profileContent").innerHTML = `
+    <div class="player-info">
+      <strong>اسم اللاعب:</strong> ${player["Player Name"] || ""}<br>
+      <strong>العمر:</strong> ${player["Age"] || ""}<br>
+      <strong>تاريخ الميلاد:</strong> ${formatDateOnly(player["Date of Birth"])}<br>
+      <strong>ولي الأمر:</strong> ${player["Parent Name"] || ""}<br>
+      <strong>الهاتف:</strong> ${player["Parent Phone"] || ""}<br>
+      <strong>الهوية:</strong> ${player["Emirates ID"] || ""}
+    </div>
+
+    ${evalHtml}
+
+    <div class="modal-actions">
+      <button onclick="closeProfileModal()" class="close-btn">إغلاق</button>
+    </div>
+  `;
+
+  document.getElementById("profileModal").style.display = "flex";
+}
+
+function closeProfileModal() {
+  document.getElementById("profileModal").style.display = "none";
+}
+  
   async function loadPlayers() {
     statusBox.style.display = "block";
     statusBox.className = "loading";
@@ -467,11 +526,16 @@
     ${player["Stage1 Status"] || "لم يتم التقييم"}
   </span>
 </td>
-        <td>
-          <button class="eval-btn" onclick='openEvaluation(${JSON.stringify(player)})'>
-            تقييم
-          </button>
-        </td>
+<td>
+  <button class="eval-btn" onclick='openProfile(${JSON.stringify(player)})'>
+    عرض الملف
+  </button>
+</td>
+<td>
+  <button class="eval-btn" onclick='openEvaluation(${JSON.stringify(player)})'>
+    تقييم
+  </button>
+</td>
       `;
 
       tbody.appendChild(row);
