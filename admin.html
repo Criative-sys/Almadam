@@ -3,645 +3,741 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>لوحة إدارة المواهب | نادي المدام</title>
+  <title>نظام موهوب| نادي المدام</title>
 
   <style>
     :root {
-      --burgundy: #6b0614;
-      --burgundy-dark: #32030d;
-      --gold: #d4a653;
-      --white: #ffffff;
-      --bg: #f5f6fa;
-      --text: #1f2937;
-      --muted: #667085;
-      --green: #027a48;
-      --red: #b42318;
+      --burgundy:#6b0614;
+      --dark:#32030d;
+      --gold:#d4a653;
+      --bg:#f5f6fa;
+      --white:#fff;
+      --text:#1f2937;
+      --muted:#667085;
+      --green:#027a48;
+      --orange:#c2410c;
+      --red:#b42318;
     }
 
     * {
-      box-sizing: border-box;
-      font-family: Tahoma, Arial, sans-serif;
+      box-sizing:border-box;
+      font-family:Tahoma, Arial, sans-serif;
     }
 
     body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
+      margin:0;
+      background:var(--bg);
+      color:var(--text);
     }
 
-    header {
-      background: linear-gradient(135deg, var(--burgundy), var(--burgundy-dark));
-      color: white;
-      padding: 25px;
-      text-align: center;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    .hidden {
+      display:none !important;
     }
 
-    .logos {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 12px;
+    .login-page {
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:linear-gradient(135deg,var(--burgundy),var(--dark));
+      padding:20px;
     }
 
-    .logos img {
-      width: 75px;
-      height: 75px;
-      object-fit: contain;
-      background: white;
-      border-radius: 14px;
-      padding: 7px;
+    .login-box {
+      width:100%;
+      max-width:420px;
+      background:white;
+      padding:32px;
+      border-radius:26px;
+      box-shadow:0 25px 70px rgba(0,0,0,.35);
+      text-align:center;
     }
 
-    header h1 {
-      margin: 8px 0;
-      color: var(--gold);
-      font-size: 28px;
+    .login-box h1 {
+      color:var(--burgundy);
+      margin:0 0 8px;
     }
 
-    header p {
-      margin: 0;
-      color: #f3f4f6;
-    }
-
-    .container {
-      max-width: 1200px;
-      margin: 25px auto;
-      padding: 0 18px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 18px;
-      margin-bottom: 22px;
-    }
-
-    .stat-card {
-      background: white;
-      border-radius: 18px;
-      padding: 22px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      border-top: 5px solid var(--gold);
-    }
-
-    .stat-card h3 {
-      margin: 0;
-      color: var(--muted);
-      font-size: 15px;
-    }
-
-    .stat-card .num {
-      margin-top: 12px;
-      font-size: 34px;
-      font-weight: bold;
-      color: var(--burgundy);
-    }
-
-    .toolbar {
-      background: white;
-      padding: 18px;
-      border-radius: 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      margin-bottom: 22px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
+    .login-box p {
+      color:var(--muted);
+      margin-bottom:25px;
     }
 
     input, textarea {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1px solid #d0d5dd;
-      border-radius: 14px;
-      font-size: 15px;
-      outline: none;
+      width:100%;
+      padding:14px;
+      border:1px solid #d0d5dd;
+      border-radius:14px;
+      outline:none;
+      font-size:15px;
+      margin-bottom:12px;
     }
 
     input:focus, textarea:focus {
-      border-color: var(--gold);
-      box-shadow: 0 0 0 4px rgba(212,166,83,0.18);
+      border-color:var(--gold);
+      box-shadow:0 0 0 4px rgba(212,166,83,.18);
     }
 
     textarea {
-      min-height: 90px;
-      resize: vertical;
+      min-height:90px;
+      resize:vertical;
     }
 
     button {
-      border: none;
-      padding: 14px 18px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--gold), #b88732);
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      font-size: 15px;
+      border:none;
+      padding:12px 16px;
+      border-radius:14px;
+      background:linear-gradient(135deg,var(--gold),#b88732);
+      color:white;
+      font-weight:bold;
+      cursor:pointer;
+      font-size:14px;
     }
 
-    .eval-btn {
-      padding: 9px 13px;
-      font-size: 13px;
-      border-radius: 10px;
+    .gray {
+      background:#667085;
+    }
+
+    header {
+      background:linear-gradient(135deg,var(--burgundy),var(--dark));
+      color:white;
+      padding:22px;
+      box-shadow:0 8px 25px rgba(0,0,0,.22);
+    }
+
+    .topbar {
+      max-width:1250px;
+      margin:auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:15px;
+    }
+
+    header h1 {
+      color:var(--gold);
+      margin:0;
+      font-size:26px;
+    }
+
+    header p {
+      margin:5px 0 0;
+      color:#f3f4f6;
+    }
+
+    .container {
+      max-width:1250px;
+      margin:24px auto;
+      padding:0 18px;
+    }
+
+    .stats {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:16px;
+      margin-bottom:20px;
+    }
+
+    .stat {
+      background:white;
+      padding:20px;
+      border-radius:18px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      border-top:5px solid var(--gold);
+    }
+
+    .stat h3 {
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .num {
+      margin-top:10px;
+      color:var(--burgundy);
+      font-size:32px;
+      font-weight:bold;
+    }
+
+    .toolbar {
+      background:white;
+      padding:16px;
+      border-radius:18px;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
+      display:flex;
+      gap:10px;
+      margin-bottom:20px;
+    }
+
+    .toolbar input {
+      margin:0;
     }
 
     .table-card {
-      background: white;
-      border-radius: 18px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-      overflow: hidden;
+      background:white;
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 10px 25px rgba(0,0,0,.08);
     }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
+      width:100%;
+      border-collapse:collapse;
     }
 
     th {
-      background: var(--burgundy);
-      color: white;
-      padding: 15px;
-      text-align: right;
-      font-size: 14px;
+      background:var(--burgundy);
+      color:white;
+      padding:14px;
+      text-align:right;
+      font-size:14px;
     }
 
     td {
-      padding: 14px 15px;
-      border-bottom: 1px solid #eaecf0;
-      font-size: 14px;
+      padding:13px;
+      border-bottom:1px solid #eee;
+      font-size:14px;
     }
 
     tr:hover {
-      background: #fafafa;
+      background:#fafafa;
     }
-
-    .empty, .loading, .error {
-      padding: 35px;
-      text-align: center;
-      font-weight: bold;
-    }
-
-    .loading { color: var(--burgundy); }
-    .error { color: var(--red); }
 
     .badge {
-      display: inline-block;
-      padding: 6px 11px;
-      border-radius: 999px;
-      background: #ecfdf3;
-      color: var(--green);
-      font-weight: bold;
-      font-size: 12px;
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:bold;
+      font-size:12px;
     }
 
-    .evaluated {
-  background: #ecfdf3;
-  color: #027a48;
-}
+    .green {
+      background:#ecfdf3;
+      color:var(--green);
+    }
 
-.not-evaluated {
-  background: #fff7ed;
-  color: #c2410c;
-}
+    .orange {
+      background:#fff7ed;
+      color:var(--orange);
+    }
+
+    .red {
+      background:#fef3f2;
+      color:var(--red);
+    }
+
     .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.55);
-      z-index: 999;
-      padding: 20px;
-      align-items: center;
-      justify-content: center;
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      z-index:999;
     }
 
     .modal-box {
-      width: 100%;
-      max-width: 620px;
-      background: white;
-      border-radius: 22px;
-      overflow: hidden;
-      box-shadow: 0 25px 70px rgba(0,0,0,0.35);
+      width:100%;
+      max-width:760px;
+      background:white;
+      border-radius:22px;
+      overflow:hidden;
+      max-height:92vh;
+      overflow-y:auto;
+      box-shadow:0 25px 70px rgba(0,0,0,.35);
     }
 
     .modal-header {
-      background: linear-gradient(135deg, var(--burgundy), var(--burgundy-dark));
-      color: white;
-      padding: 20px;
+      background:linear-gradient(135deg,var(--burgundy),var(--dark));
+      color:white;
+      padding:20px;
     }
 
     .modal-header h2 {
-      margin: 0;
-      color: var(--gold);
+      margin:0;
+      color:var(--gold);
     }
 
     .modal-body {
-      padding: 22px;
+      padding:22px;
     }
 
-    .player-info {
-      background: #fafafa;
-      border: 1px solid #eee;
-      padding: 14px;
-      border-radius: 14px;
-      margin-bottom: 18px;
-      line-height: 1.8;
+    .info {
+      background:#fafafa;
+      border:1px solid #eee;
+      border-radius:16px;
+      padding:15px;
+      margin-bottom:15px;
+      line-height:1.8;
     }
 
-    .check-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px;
-      margin-bottom: 10px;
-      border: 1px solid #eee;
-      border-radius: 14px;
-      background: #fff;
-      cursor: pointer;
+    .stage-grid {
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:12px;
     }
 
-    .check-item input {
-      width: 20px;
-      height: 20px;
-      flex: 0;
-      accent-color: var(--burgundy);
+    .stage-card {
+      border:1px solid #eee;
+      border-radius:16px;
+      padding:14px;
+      background:white;
     }
 
-    .modal-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 15px;
+    .stage-card h3 {
+      margin:0 0 8px;
+      color:var(--burgundy);
     }
 
-    .close-btn {
-      background: #667085;
+    .check {
+      display:flex;
+      gap:12px;
+      align-items:center;
+      border:1px solid #eee;
+      border-radius:14px;
+      padding:13px;
+      margin-bottom:10px;
+      cursor:pointer;
     }
 
-    .success-msg {
-      display: none;
-      margin-top: 12px;
-      padding: 13px;
-      border-radius: 12px;
-      background: #ecfdf3;
-      color: #027a48;
-      font-weight: bold;
-      text-align: center;
+    .check input {
+      width:20px;
+      height:20px;
+      margin:0;
+      accent-color:var(--burgundy);
     }
 
-    @media (max-width: 850px) {
-      .stats { grid-template-columns: 1fr; }
-      .toolbar { flex-direction: column; }
-      input, button { width: 100%; }
-      .table-card { overflow-x: auto; }
-      table { min-width: 950px; }
-      .modal-actions { flex-direction: column; }
+    .actions {
+      display:flex;
+      gap:10px;
+      margin-top:15px;
+      flex-wrap:wrap;
+    }
+
+    @media(max-width:900px) {
+      .stats, .stage-grid {
+        grid-template-columns:1fr;
+      }
+
+      .topbar, .toolbar {
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .table-card {
+        overflow-x:auto;
+      }
+
+      table {
+        min-width:1000px;
+      }
+
+      button {
+        width:100%;
+      }
     }
   </style>
 </head>
 
 <body>
 
-<header>
-  <div class="logos">
-    <img src="logo1.jpeg" alt="Al Madam Club">
-    <img src="SSC.png" alt="Sharjah Sports Council">
-  </div>
+<section id="loginPage" class="login-page">
+  <div class="login-box">
+    <h1>نظام المواهب الرياضية</h1>
+    <p>نادي المدام الثقافي الرياضي</p>
 
-  <h1>لوحة إدارة المواهب الرياضية</h1>
-  <p>نادي المدام الثقافي الرياضي</p>
+    <input id="username" placeholder="اسم المستخدم">
+    <input id="password" type="password" placeholder="كلمة المرور">
+
+    <button onclick="login()">دخول</button>
+    <p id="loginMsg" style="color:#b42318;font-weight:bold;display:none;">بيانات الدخول غير صحيحة</p>
+  </div>
+</section>
+
+<section id="appPage" class="hidden">
+
+<header>
+  <div class="topbar">
+    <div>
+      <h1>لوحة إدارة المواهب الرياضية</h1>
+      <p>نادي المدام الثقافي الرياضي</p>
+    </div>
+
+    <div>
+      <span id="userInfo"></span>
+      <button class="gray" onclick="logout()">تسجيل الخروج</button>
+    </div>
+  </div>
 </header>
 
-<div class="container">
+<main class="container">
 
   <div class="stats">
-    <div class="stat-card">
-      <h3>إجمالي المسجلين</h3>
+    <div class="stat">
+      <h3>إجمالي اللاعبين</h3>
       <div class="num" id="totalPlayers">0</div>
     </div>
 
-    <div class="stat-card">
-      <h3>الفئة العمرية</h3>
-      <div class="num">8-12</div>
+    <div class="stat">
+      <h3>المرحلة الأولى</h3>
+      <div class="num" id="stage1Count">0</div>
     </div>
 
-    <div class="stat-card">
-      <h3>حالة النظام</h3>
-      <div class="num" style="font-size:24px;">نشط</div>
+    <div class="stat">
+      <h3>المرحلة الثانية</h3>
+      <div class="num" id="stage2Count">0</div>
+    </div>
+
+    <div class="stat">
+      <h3>مكتمل</h3>
+      <div class="num" id="completedCount">0</div>
     </div>
   </div>
 
   <div class="toolbar">
-    <input type="text" id="searchInput" placeholder="ابحث باسم اللاعب أو رقم الهوية أو رقم الهاتف...">
+    <input id="searchInput" placeholder="ابحث باسم اللاعب أو الهوية أو رقم الهاتف...">
     <button onclick="loadPlayers()">تحديث البيانات</button>
   </div>
 
   <div class="table-card">
-    <div id="status" class="loading">جاري تحميل البيانات...</div>
-
-    <table id="playersTable" style="display:none;">
+    <table>
       <thead>
         <tr>
           <th>#</th>
-          <th>تاريخ التسجيل</th>
           <th>اسم اللاعب</th>
           <th>العمر</th>
-          <th>تاريخ الميلاد</th>
-          <th>اسم ولي الأمر</th>
-          <th>رقم الهاتف</th>
-          <th>الهوية الإماراتية</th>
-          <th>الحالة</th>
+          <th>ولي الأمر</th>
+          <th>الهاتف</th>
+          <th>الهوية</th>
+          <th>المرحلة الحالية</th>
           <th>الملف</th>
           <th>التقييم</th>
         </tr>
       </thead>
-      <tbody id="playersBody"></tbody>
+      <tbody id="playersBody">
+        <tr><td colspan="9">جاري التحميل...</td></tr>
+      </tbody>
     </table>
   </div>
 
-</div>
-
-<div class="modal" id="evalModal">
-  <div class="modal-box">
-    <div class="modal-header">
-      <h2>تقييم المرحلة الأولى 1-A</h2>
-      <p>الرصد الميداني السريع للموهبة الرياضية</p>
-    </div>
-
-    <div class="modal-body">
-      <div class="player-info">
-        <strong>اللاعب:</strong> <span id="modalPlayerName"></span><br>
-        <strong>الهوية:</strong> <span id="modalEmiratesId"></span>
-      </div>
-
-      <label class="check-item">
-        <input type="checkbox" id="activity">
-        الطفل يُقبل على الأنشطة بتلقائية
-      </label>
-
-      <label class="check-item">
-        <input type="checkbox" id="fastLearning">
-        يتعلم المهارة الجديدة بسرعة
-      </label>
-
-      <label class="check-item">
-        <input type="checkbox" id="focus">
-        يحافظ على التركيز أكثر من 10 دقائق
-      </label>
-
-      <label class="check-item">
-        <input type="checkbox" id="competition">
-        يتفاعل إيجابياً مع التنافس
-      </label>
-
-      <label class="check-item">
-        <input type="checkbox" id="balance">
-        يُظهر توازناً فوق المتوسط
-      </label>
-
-      <textarea id="notes" placeholder="ملاحظات المدرب..."></textarea>
-
-      <div class="modal-actions">
-        <button onclick="saveEvaluation()" id="saveEvalBtn">حفظ التقييم</button>
-        <button onclick="closeModal()" class="close-btn">إغلاق</button>
-      </div>
-
-      <div class="success-msg" id="evalMessage">تم حفظ التقييم بنجاح ✅</div>
-    </div>
-  </div>
-</div>
+</main>
+</section>
 
 <div class="modal" id="profileModal">
   <div class="modal-box">
     <div class="modal-header">
       <h2>ملف اللاعب</h2>
-      <p>بيانات التسجيل ونتيجة المرحلة الأولى</p>
+      <p>بيانات التسجيل ومسار الموهبة</p>
     </div>
-
-    <div class="modal-body" id="profileContent"></div>
+    <div class="modal-body" id="profileBody"></div>
   </div>
 </div>
-  
-<script>
-  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
 
-  let allPlayers = [];
-  let selectedPlayer = null;
-
-  const statusBox = document.getElementById("status");
-  const table = document.getElementById("playersTable");
-  const tbody = document.getElementById("playersBody");
-  const totalPlayers = document.getElementById("totalPlayers");
-  const searchInput = document.getElementById("searchInput");
-
-  function openProfile(player) {
-  const evaluation = player["Stage1 Evaluation"];
-
-  let evalHtml = "";
-
-  if (evaluation) {
-    evalHtml = `
-      <div class="player-info">
-        <strong>نتيجة المرحلة الأولى:</strong><br>
-        مجموع العلامات: ${evaluation["Total Ticks"] || "0"} / 5<br>
-        التصنيف: ${evaluation["Classification"] || ""}<br>
-        الملاحظات: ${evaluation["Notes"] || "لا توجد ملاحظات"}
-      </div>
-    `;
-  } else {
-    evalHtml = `
-      <div class="player-info">
-        <strong>نتيجة المرحلة الأولى:</strong><br>
-        لم يتم التقييم بعد.
-      </div>
-    `;
-  }
-
-  document.getElementById("profileContent").innerHTML = `
-    <div class="player-info">
-      <strong>اسم اللاعب:</strong> ${player["Player Name"] || ""}<br>
-      <strong>العمر:</strong> ${player["Age"] || ""}<br>
-      <strong>تاريخ الميلاد:</strong> ${formatDateOnly(player["Date of Birth"])}<br>
-      <strong>ولي الأمر:</strong> ${player["Parent Name"] || ""}<br>
-      <strong>الهاتف:</strong> ${player["Parent Phone"] || ""}<br>
-      <strong>الهوية:</strong> ${player["Emirates ID"] || ""}
+<div class="modal" id="evalModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2 id="evalTitle">تقييم</h2>
+      <p>اختر البنود التي تنطبق على اللاعب</p>
     </div>
 
-    ${evalHtml}
+    <div class="modal-body">
+      <div class="info">
+        <strong>اللاعب:</strong> <span id="evalPlayerName"></span><br>
+        <strong>الهوية:</strong> <span id="evalEmiratesId"></span>
+      </div>
 
-    <div class="modal-actions">
-      <button onclick="closeProfileModal()" class="close-btn">إغلاق</button>
+      <div id="checksBox"></div>
+
+      <textarea id="evalNotes" placeholder="ملاحظات المقيّم..."></textarea>
+
+      <div class="actions">
+        <button onclick="saveEvaluation()" id="saveBtn">حفظ التقييم</button>
+        <button class="gray" onclick="closeEval()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
+
+let allPlayers = [];
+let currentPlayers = [];
+let selectedPlayer = null;
+let selectedStage = "";
+
+const stageItems = {
+  "Stage 1": [
+    "الطفل يُقبل على الأنشطة بتلقائية",
+    "يتعلم المهارة الجديدة بسرعة",
+    "يحافظ على التركيز أكثر من 10 دقائق",
+    "يتفاعل إيجابياً مع التنافس",
+    "يُظهر توازناً فوق المتوسط"
+  ],
+  "Stage 2": [
+    "لديه دافعية عالية للتدريب",
+    "يتحمل الضغط أثناء المنافسة",
+    "يستمر في المحاولة عند الفشل",
+    "يفهم التعليمات بسرعة",
+    "يتخذ قرارات حركية جيدة"
+  ],
+  "Stage 3": [
+    "لياقته البدنية جيدة",
+    "يتحسن مستواه بوضوح",
+    "ملتزم بالحضور والتدريب",
+    "يناسب رياضة محددة",
+    "مرشح لخطة تطوير فردية"
+  ]
+};
+
+window.onload = function() {
+  if (localStorage.getItem("talentLoggedIn") === "yes") {
+    showApp();
+    loadPlayers();
+  } else {
+    showLogin();
+  }
+};
+
+function showLogin() {
+  document.getElementById("loginPage").classList.remove("hidden");
+  document.getElementById("appPage").classList.add("hidden");
+}
+
+function showApp() {
+  document.getElementById("loginPage").classList.add("hidden");
+  document.getElementById("appPage").classList.remove("hidden");
+  document.getElementById("userInfo").textContent =
+    (localStorage.getItem("talentUser") || "") + " - " + (localStorage.getItem("talentRole") || "");
+}
+
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  const url = `${SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
+
+  try {
+    const res = await fetch(url);
+    const result = await res.json();
+
+    if (result.status === "success") {
+      localStorage.setItem("talentLoggedIn", "yes");
+      localStorage.setItem("talentUser", result.username);
+      localStorage.setItem("talentRole", result.role);
+      showApp();
+      loadPlayers();
+    } else {
+      document.getElementById("loginMsg").style.display = "block";
+    }
+  } catch(e) {
+    document.getElementById("loginMsg").style.display = "block";
+  }
+}
+
+function logout() {
+  localStorage.clear();
+  showLogin();
+}
+
+async function loadPlayers() {
+  document.getElementById("playersBody").innerHTML =
+    `<tr><td colspan="9">جاري تحميل البيانات...</td></tr>`;
+
+  try {
+    const res = await fetch(`${SCRIPT_URL}?action=getPlayers`);
+    allPlayers = await res.json();
+    renderPlayers(allPlayers);
+    updateStats(allPlayers);
+  } catch(e) {
+    document.getElementById("playersBody").innerHTML =
+      `<tr><td colspan="9">خطأ في تحميل البيانات</td></tr>`;
+  }
+}
+
+function renderPlayers(players) {
+  currentPlayers = players;
+  const body = document.getElementById("playersBody");
+  body.innerHTML = "";
+
+  if (!players.length) {
+    body.innerHTML = `<tr><td colspan="9">لا توجد بيانات</td></tr>`;
+    return;
+  }
+
+  players.forEach((p, i) => {
+    body.innerHTML += `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${p["Player Name"] || ""}</td>
+        <td>${p["Age"] || ""}</td>
+        <td>${p["Parent Name"] || ""}</td>
+        <td>${p["Parent Phone"] || ""}</td>
+        <td>${p["Emirates ID"] || ""}</td>
+        <td>${stageBadge(p["Next Stage"])}</td>
+        <td><button onclick="openProfile(${i})">عرض الملف</button></td>
+        <td><button onclick="openEvaluation(${i})">تقييم</button></td>
+      </tr>
+    `;
+  });
+}
+
+function updateStats(players) {
+  document.getElementById("totalPlayers").textContent = players.length;
+  document.getElementById("stage1Count").textContent =
+    players.filter(p => p["Next Stage"] === "Stage 1").length;
+  document.getElementById("stage2Count").textContent =
+    players.filter(p => p["Next Stage"] === "Stage 2").length;
+  document.getElementById("completedCount").textContent =
+    players.filter(p => p["Next Stage"] === "Completed").length;
+}
+
+function stageBadge(stage) {
+  if (stage === "Stage 1") return `<span class="badge orange">المرحلة الأولى</span>`;
+  if (stage === "Stage 2") return `<span class="badge green">المرحلة الثانية</span>`;
+  if (stage === "Stage 3") return `<span class="badge green">المرحلة الثالثة</span>`;
+  if (stage === "Completed") return `<span class="badge green">مكتمل</span>`;
+  return `<span class="badge red">متابعة</span>`;
+}
+
+function openProfile(index) {
+  const p = currentPlayers[index];
+
+  document.getElementById("profileBody").innerHTML = `
+    <div class="info">
+      <strong>اسم اللاعب:</strong> ${p["Player Name"] || ""}<br>
+      <strong>العمر:</strong> ${p["Age"] || ""}<br>
+      <strong>تاريخ الميلاد:</strong> ${formatDate(p["Date of Birth"])}<br>
+      <strong>ولي الأمر:</strong> ${p["Parent Name"] || ""}<br>
+      <strong>الهاتف:</strong> ${p["Parent Phone"] || ""}<br>
+      <strong>الهوية:</strong> ${p["Emirates ID"] || ""}
+    </div>
+
+    <div class="stage-grid">
+      ${stageCard("المرحلة الأولى", p["Stage 1"])}
+      ${stageCard("المرحلة الثانية", p["Stage 2"])}
+      ${stageCard("المرحلة الثالثة", p["Stage 3"])}
+    </div>
+
+    <div class="actions">
+      <button class="gray" onclick="closeProfile()">إغلاق</button>
     </div>
   `;
 
   document.getElementById("profileModal").style.display = "flex";
 }
 
-function closeProfileModal() {
+function stageCard(title, ev) {
+  if (!ev) {
+    return `
+      <div class="stage-card">
+        <h3>${title}</h3>
+        <span class="badge orange">لم يتم التقييم</span>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="stage-card">
+      <h3>${title}</h3>
+      <p>العلامات: ${ev["Total"] || 0} / 5</p>
+      <p>${ev["Classification"] || ""}</p>
+      <p>${ev["Decision"] || ""}</p>
+    </div>
+  `;
+}
+
+function closeProfile() {
   document.getElementById("profileModal").style.display = "none";
 }
-  
-  async function loadPlayers() {
-    statusBox.style.display = "block";
-    statusBox.className = "loading";
-    statusBox.textContent = "جاري تحميل البيانات...";
-    table.style.display = "none";
 
-    try {
-      const response = await fetch(SCRIPT_URL);
-      const data = await response.json();
+function openEvaluation(index) {
+  selectedPlayer = currentPlayers[index];
+  selectedStage = selectedPlayer["Next Stage"];
 
-      allPlayers = data;
-      renderPlayers(allPlayers);
-
-    } catch (error) {
-      statusBox.className = "error";
-      statusBox.textContent = "لم يتم تحميل البيانات. تأكد من كود doGet وإعادة نشر Apps Script.";
-    }
+  if (selectedStage === "Completed") {
+    alert("تم اكتمال مراحل اللاعب.");
+    return;
   }
 
-  function renderPlayers(players) {
-    tbody.innerHTML = "";
-    totalPlayers.textContent = players.length;
-
-    if (players.length === 0) {
-      statusBox.className = "empty";
-      statusBox.textContent = "لا توجد بيانات مسجلة.";
-      table.style.display = "none";
-      return;
-    }
-
-    players.forEach((player, index) => {
-      const row = document.createElement("tr");
-
-      row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${formatDate(player["Timestamp"])}</td>
-        <td>${player["Player Name"] || ""}</td>
-        <td>${player["Age"] || ""}</td>
-        <td>${formatDateOnly(player["Date of Birth"])}</td>
-        <td>${player["Parent Name"] || ""}</td>
-        <td>${player["Parent Phone"] || ""}</td>
-        <td>${player["Emirates ID"] || ""}</td>
-        <td>
-  <span class="badge ${player["Stage1 Status"] === "تم التقييم" ? "evaluated" : "not-evaluated"}">
-    ${player["Stage1 Status"] || "لم يتم التقييم"}
-  </span>
-</td>
-<td>
-  <button class="eval-btn" onclick='openProfile(${JSON.stringify(player)})'>
-    عرض الملف
-  </button>
-</td>
-<td>
-  <button class="eval-btn" onclick='openEvaluation(${JSON.stringify(player)})'>
-    تقييم
-  </button>
-</td>
-      `;
-
-      tbody.appendChild(row);
-    });
-
-    statusBox.style.display = "none";
-    table.style.display = "table";
+  if (selectedStage === "Hold") {
+    alert("اللاعب يحتاج متابعة قبل الانتقال للمرحلة التالية.");
+    return;
   }
 
-  function openEvaluation(player) {
-    selectedPlayer = player;
+  document.getElementById("evalTitle").textContent = "تقييم " + selectedPlayer["Arabic Stage"];
+  document.getElementById("evalPlayerName").textContent = selectedPlayer["Player Name"] || "";
+  document.getElementById("evalEmiratesId").textContent = selectedPlayer["Emirates ID"] || "";
+  document.getElementById("evalNotes").value = "";
 
-    document.getElementById("modalPlayerName").textContent = player["Player Name"] || "";
-    document.getElementById("modalEmiratesId").textContent = player["Emirates ID"] || "";
+  const box = document.getElementById("checksBox");
+  box.innerHTML = "";
 
-    document.getElementById("activity").checked = false;
-    document.getElementById("fastLearning").checked = false;
-    document.getElementById("focus").checked = false;
-    document.getElementById("competition").checked = false;
-    document.getElementById("balance").checked = false;
-    document.getElementById("notes").value = "";
-    document.getElementById("evalMessage").style.display = "none";
-
-    document.getElementById("evalModal").style.display = "flex";
-  }
-
-  function closeModal() {
-    document.getElementById("evalModal").style.display = "none";
-  }
-
-  async function saveEvaluation() {
-    if (!selectedPlayer) return;
-
-    const btn = document.getElementById("saveEvalBtn");
-    btn.disabled = true;
-    btn.textContent = "جاري الحفظ...";
-
-    const data = new URLSearchParams();
-    data.append("action", "saveStage1Ticks");
-    data.append("playerName", selectedPlayer["Player Name"] || "");
-    data.append("emiratesId", selectedPlayer["Emirates ID"] || "");
-    data.append("activity", document.getElementById("activity").checked);
-    data.append("fastLearning", document.getElementById("fastLearning").checked);
-    data.append("focus", document.getElementById("focus").checked);
-    data.append("competition", document.getElementById("competition").checked);
-    data.append("balance", document.getElementById("balance").checked);
-    data.append("notes", document.getElementById("notes").value);
-
-    try {
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: data
-      });
-
-      document.getElementById("evalMessage").style.display = "block";
-
-      setTimeout(() => {
-        closeModal();
-      }, 1200);
-
-    } catch (error) {
-      alert("حدث خطأ أثناء حفظ التقييم.");
-    }
-
-    btn.disabled = false;
-    btn.textContent = "حفظ التقييم";
-  }
-
-  function formatDate(value) {
-    if (!value) return "";
-    const date = new Date(value);
-    if (isNaN(date)) return value;
-
-    return date.toLocaleString("ar-AE", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
-  }
-
-  function formatDateOnly(value) {
-    if (!value) return "";
-    const date = new Date(value);
-    if (isNaN(date)) return value;
-
-    return date.toLocaleDateString("ar-AE", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit"
-    });
-  }
-
-  searchInput.addEventListener("input", function() {
-    const keyword = searchInput.value.toLowerCase().trim();
-
-    const filtered = allPlayers.filter(player => {
-      return JSON.stringify(player).toLowerCase().includes(keyword);
-    });
-
-    renderPlayers(filtered);
+  stageItems[selectedStage].forEach((item, i) => {
+    box.innerHTML += `
+      <label class="check">
+        <input type="checkbox" class="evalCheck">
+        ${item}
+      </label>
+    `;
   });
 
-  loadPlayers();
+  document.getElementById("evalModal").style.display = "flex";
+}
+
+function closeEval() {
+  document.getElementById("evalModal").style.display = "none";
+}
+
+async function saveEvaluation() {
+  const checks = [...document.querySelectorAll(".evalCheck")].map(c => c.checked);
+
+  const data = new URLSearchParams();
+  data.append("action", "saveEvaluation");
+  data.append("playerName", selectedPlayer["Player Name"] || "");
+  data.append("emiratesId", selectedPlayer["Emirates ID"] || "");
+  data.append("stage", selectedStage);
+  data.append("item1", checks[0]);
+  data.append("item2", checks[1]);
+  data.append("item3", checks[2]);
+  data.append("item4", checks[3]);
+  data.append("item5", checks[4]);
+  data.append("notes", document.getElementById("evalNotes").value);
+  data.append("evaluator", localStorage.getItem("talentUser") || "");
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: data
+    });
+
+    alert("تم حفظ التقييم ✅");
+    closeEval();
+    setTimeout(loadPlayers, 800);
+
+  } catch(e) {
+    alert("حدث خطأ أثناء الحفظ");
+  }
+}
+
+document.getElementById("searchInput").addEventListener("input", function() {
+  const q = this.value.toLowerCase().trim();
+
+  const filtered = allPlayers.filter(p =>
+    JSON.stringify(p).toLowerCase().includes(q)
+  );
+
+  renderPlayers(filtered);
+});
+
+function formatDate(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (isNaN(d)) return value;
+  return d.toLocaleDateString("ar-AE");
+}
 </script>
 
 </body>
