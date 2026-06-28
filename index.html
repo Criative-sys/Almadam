@@ -27,9 +27,9 @@
       margin: 0;
       min-height: 100vh;
       background:
-        linear-gradient(rgba(13, 32, 58, 0.88), rgba(13, 32, 58, 0.92)),
-        radial-gradient(circle at top right, rgba(214,170,85,0.35), transparent 35%),
-        linear-gradient(135deg, #17365d, #0d203a);
+  linear-gradient(rgba(60, 2, 12, 0.90), rgba(15, 20, 35, 0.95)),
+  radial-gradient(circle at top right, rgba(214,170,85,0.35), transparent 35%),
+  linear-gradient(135deg, #6b0614, #111827);
       color: var(--text);
     }
 
@@ -363,101 +363,95 @@
     </section>
   </main>
 
-  <script>
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
 
-    const form = document.getElementById("talentForm");
-    const submitBtn = document.getElementById("submitBtn");
-    const message = document.getElementById("message");
+  const form = document.getElementById("talentForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const message = document.getElementById("message");
 
-    function showMessage(text, type) {
-      message.textContent = text;
-      message.className = "message " + type;
+  function showMessage(text, type) {
+    message.textContent = text;
+    message.className = "message " + type;
+    message.style.display = "block";
+  }
+
+  function cleanPhone(phone) {
+    return phone.replace(/\s|-/g, "");
+  }
+
+  function isValidUAEPhone(phone) {
+    phone = cleanPhone(phone);
+    return /^(05\d{8}|9715\d{8}|\+9715\d{8})$/.test(phone);
+  }
+
+  function isValidEmiratesId(id) {
+    id = id.replace(/-/g, "").replace(/\s/g, "");
+    return /^784\d{12}$/.test(id);
+  }
+
+  form.addEventListener("submit", async function(e) {
+    e.preventDefault();
+
+    message.style.display = "none";
+
+    const formData = new FormData(form);
+
+    const playerName = formData.get("playerName").trim();
+    const age = Number(formData.get("age"));
+    const dob = formData.get("dob");
+    const parentName = formData.get("parentName").trim();
+    const parentPhone = formData.get("parentPhone").trim();
+    const emiratesId = formData.get("emiratesId").trim();
+
+    if (!playerName || !age || !dob || !parentName || !parentPhone || !emiratesId) {
+      showMessage("يرجى تعبئة جميع الحقول المطلوبة.", "error");
+      return;
     }
 
-    function cleanPhone(phone) {
-      return phone.replace(/\s|-/g, "");
+    if (age < 8 || age > 12) {
+      showMessage("العمر المسموح للتسجيل من 8 إلى 12 سنة فقط.", "error");
+      return;
     }
 
-    function isValidUAEPhone(phone) {
-      phone = cleanPhone(phone);
-      return /^(05\d{8}|9715\d{8}|\+9715\d{8})$/.test(phone);
+    if (!isValidUAEPhone(parentPhone)) {
+      showMessage("رقم الهاتف غير صحيح. الرجاء إدخال رقم إماراتي مثل 0501234567.", "error");
+      return;
     }
 
-    function isValidEmiratesId(id) {
-      id = id.replace(/-/g, "").replace(/\s/g, "");
-      return /^784\d{12}$/.test(id);
+    if (!isValidEmiratesId(emiratesId)) {
+      showMessage("رقم الهوية الإماراتية غير صحيح. يجب أن يبدأ بـ 784 ويتكون من 15 رقم.", "error");
+      return;
     }
 
-    form.addEventListener("submit", async function(e) {
-      e.preventDefault();
+    submitBtn.disabled = true;
+    submitBtn.textContent = "جاري الإرسال...";
 
-      message.style.display = "none";
+    const data = new URLSearchParams();
+    data.append("playerName", playerName);
+    data.append("age", age);
+    data.append("dob", dob);
+    data.append("parentName", parentName);
+    data.append("parentPhone", cleanPhone(parentPhone));
+    data.append("emiratesId", emiratesId);
 
-      const formData = new FormData(form);
+    try {
+      await fetch(SCRIPT_URL, {
+        method: "POST",
+        mode: "no-cors",
+        body: data
+      });
 
-      const playerName = formData.get("playerName").trim();
-      const age = Number(formData.get("age"));
-      const dob = formData.get("dob");
-      const parentName = formData.get("parentName").trim();
-      const parentPhone = formData.get("parentPhone").trim();
-      const emiratesId = formData.get("emiratesId").trim();
+      showMessage("تم التسجيل بنجاح ✅", "success");
+      form.reset();
 
-      if (!playerName || !age || !dob || !parentName || !parentPhone || !emiratesId) {
-        showMessage("يرجى تعبئة جميع الحقول المطلوبة.", "error");
-        return;
-      }
+    } catch (error) {
+      showMessage("حدث خطأ أثناء الإرسال. حاول مرة أخرى.", "error");
+    }
 
-      if (age < 8 || age > 12) {
-        showMessage("العمر المسموح للتسجيل من 8 إلى 12 سنة فقط.", "error");
-        return;
-      }
-
-      if (!isValidUAEPhone(parentPhone)) {
-        showMessage("رقم الهاتف غير صحيح. الرجاء إدخال رقم إماراتي مثل 0501234567.", "error");
-        return;
-      }
-
-      if (!isValidEmiratesId(emiratesId)) {
-        showMessage("رقم الهوية الإماراتية غير صحيح. يجب أن يبدأ بـ 784 ويتكون من 15 رقم.", "error");
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = "جاري الإرسال...";
-
-      try {
-        const data = new URLSearchParams();
-        data.append("playerName", playerName);
-        data.append("age", age);
-        data.append("dob", dob);
-        data.append("parentName", parentName);
-        data.append("parentPhone", cleanPhone(parentPhone));
-        data.append("emiratesId", emiratesId);
-
-        const response = await fetch(SCRIPT_URL, {
-          method: "POST",
-          body: data
-        });
-
-        const result = await response.text();
-
-        if (result.includes("success")) {
-          showMessage("تم إرسال التسجيل بنجاح ✅", "success");
-          form.reset();
-        } else if (result.includes("missing_data")) {
-          showMessage("لم يتم الإرسال، توجد بيانات ناقصة.", "error");
-        } else {
-          showMessage("حدث خطأ أثناء الإرسال. تأكد من إعدادات Apps Script.", "error");
-        }
-
-      } catch (error) {
-        showMessage("تعذر الاتصال بالخادم. جرّب مرة أخرى.", "error");
-      }
-
-      submitBtn.disabled = false;
-      submitBtn.textContent = "إرسال التسجيل";
-    });
-  </script>
+    submitBtn.disabled = false;
+    submitBtn.textContent = "إرسال التسجيل";
+  });
+</script>
 </body>
 </html>
