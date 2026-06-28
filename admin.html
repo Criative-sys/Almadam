@@ -594,11 +594,27 @@ function updateStats(players) {
 }
 
 function stageBadge(stage) {
-  if (stage === "Stage 1") return `<span class="badge orange">المرحلة الأولى</span>`;
-  if (stage === "Stage 2") return `<span class="badge green">المرحلة الثانية</span>`;
-  if (stage === "Stage 3") return `<span class="badge green">المرحلة الثالثة</span>`;
-  if (stage === "Completed") return `<span class="badge green">مكتمل</span>`;
-  return `<span class="badge red">متابعة</span>`;
+  if (stage === "Stage 1") {
+    return `<span class="badge orange">المرحلة الأولى</span>`;
+  }
+
+  if (stage === "Stage 2") {
+    return `<span class="badge green">المرحلة الثانية</span>`;
+  }
+
+  if (stage === "Stage 3") {
+    return `<span class="badge green">المرحلة الثالثة</span>`;
+  }
+
+  if (stage === "Completed") {
+    return `<span class="badge green">مكتمل</span>`;
+  }
+
+  if (stage === "Hold") {
+    return `<span class="badge orange">🔄 إعادة تقييم المرحلة الأولى</span>`;
+  }
+
+  return `<span class="badge red">غير معروف</span>`;
 }
 
 function openProfile(index) {
@@ -661,10 +677,18 @@ function openEvaluation(index) {
     return;
   }
 
-  if (selectedStage === "Hold") {
-    alert("اللاعب يحتاج متابعة قبل الانتقال للمرحلة التالية.");
-    return;
-  }
+if (selectedStage === "Hold") {
+
+    if (selectedPlayer["Stage 1"]) {
+        selectedStage = "Stage 1";
+    } else if (selectedPlayer["Stage 2"]) {
+        selectedStage = "Stage 2";
+    } else {
+        selectedStage = "Stage 1";
+    }
+
+    alert("هذا اللاعب يحتاج إعادة تقييم.");
+}
 
   document.getElementById("evalTitle").textContent = "تقييم " + selectedPlayer["Arabic Stage"];
   document.getElementById("evalPlayerName").textContent = selectedPlayer["Player Name"] || "";
