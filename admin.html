@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة إدارة المواهب | نادي المدام</title>
+
+  <style>
+    :root {
+      --burgundy: #6b0614;
+      --burgundy-dark: #32030d;
+      --gold: #d4a653;
+      --white: #ffffff;
+      --bg: #f5f6fa;
+      --text: #1f2937;
+      --muted: #667085;
+      --green: #027a48;
+      --red: #b42318;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: Tahoma, Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--burgundy), var(--burgundy-dark));
+      color: white;
+      padding: 25px;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+    }
+
+    .logos {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    .logos img {
+      width: 75px;
+      height: 75px;
+      object-fit: contain;
+      background: white;
+      border-radius: 14px;
+      padding: 7px;
+    }
+
+    header h1 {
+      margin: 8px 0;
+      color: var(--gold);
+      font-size: 28px;
+    }
+
+    header p {
+      margin: 0;
+      color: #f3f4f6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 25px auto;
+      padding: 0 18px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      border-top: 5px solid var(--gold);
+    }
+
+    .stat-card h3 {
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .stat-card .num {
+      margin-top: 12px;
+      font-size: 34px;
+      font-weight: bold;
+      color: var(--burgundy);
+    }
+
+    .toolbar {
+      background: white;
+      padding: 18px;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      margin-bottom: 22px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    input {
+      flex: 1;
+      padding: 14px 16px;
+      border: 1px solid #d0d5dd;
+      border-radius: 14px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 4px rgba(212,166,83,0.18);
+    }
+
+    button {
+      border: none;
+      padding: 14px 18px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--gold), #b88732);
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .table-card {
+      background: white;
+      border-radius: 18px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th {
+      background: var(--burgundy);
+      color: white;
+      padding: 15px;
+      text-align: right;
+      font-size: 14px;
+    }
+
+    td {
+      padding: 14px 15px;
+      border-bottom: 1px solid #eaecf0;
+      font-size: 14px;
+    }
+
+    tr:hover {
+      background: #fafafa;
+    }
+
+    .empty, .loading, .error {
+      padding: 35px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .loading {
+      color: var(--burgundy);
+    }
+
+    .error {
+      color: var(--red);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 11px;
+      border-radius: 999px;
+      background: #ecfdf3;
+      color: var(--green);
+      font-weight: bold;
+      font-size: 12px;
+    }
+
+    @media (max-width: 850px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        flex-direction: column;
+      }
+
+      input, button {
+        width: 100%;
+      }
+
+      .table-card {
+        overflow-x: auto;
+      }
+
+      table {
+        min-width: 850px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="logos">
+    <img src="logo1.jpeg" alt="Al Madam Club">
+    <img src="SSC.png" alt="Sharjah Sports Council">
+  </div>
+
+  <h1>لوحة إدارة المواهب الرياضية</h1>
+  <p>نادي المدام الثقافي الرياضي</p>
+</header>
+
+<div class="container">
+
+  <div class="stats">
+    <div class="stat-card">
+      <h3>إجمالي المسجلين</h3>
+      <div class="num" id="totalPlayers">0</div>
+    </div>
+
+    <div class="stat-card">
+      <h3>الفئة العمرية</h3>
+      <div class="num">8-12</div>
+    </div>
+
+    <div class="stat-card">
+      <h3>حالة النظام</h3>
+      <div class="num" style="font-size:24px;">نشط</div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="searchInput" placeholder="ابحث باسم اللاعب أو رقم الهوية أو رقم الهاتف...">
+    <button onclick="loadPlayers()">تحديث البيانات</button>
+  </div>
+
+  <div class="table-card">
+    <div id="status" class="loading">جاري تحميل البيانات...</div>
+
+    <table id="playersTable" style="display:none;">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>تاريخ التسجيل</th>
+          <th>اسم اللاعب</th>
+          <th>العمر</th>
+          <th>تاريخ الميلاد</th>
+          <th>اسم ولي الأمر</th>
+          <th>رقم الهاتف</th>
+          <th>الهوية الإماراتية</th>
+          <th>الحالة</th>
+        </tr>
+      </thead>
+      <tbody id="playersBody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
+
+  let allPlayers = [];
+
+  const statusBox = document.getElementById("status");
+  const table = document.getElementById("playersTable");
+  const tbody = document.getElementById("playersBody");
+  const totalPlayers = document.getElementById("totalPlayers");
+  const searchInput = document.getElementById("searchInput");
+
+  async function loadPlayers() {
+    statusBox.style.display = "block";
+    statusBox.className = "loading";
+    statusBox.textContent = "جاري تحميل البيانات...";
+    table.style.display = "none";
+
+    try {
+      const response = await fetch(SCRIPT_URL);
+      const data = await response.json();
+
+      allPlayers = data;
+      renderPlayers(allPlayers);
+
+    } catch (error) {
+      statusBox.className = "error";
+      statusBox.textContent = "لم يتم تحميل البيانات. تأكد من كود doGet وإعادة نشر Apps Script.";
+    }
+  }
+
+  function renderPlayers(players) {
+    tbody.innerHTML = "";
+    totalPlayers.textContent = players.length;
+
+    if (players.length === 0) {
+      statusBox.className = "empty";
+      statusBox.textContent = "لا توجد بيانات مسجلة.";
+      table.style.display = "none";
+      return;
+    }
+
+    players.forEach((player, index) => {
+      const row = document.createElement("tr");
+
+      row.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${formatDate(player["Timestamp"])}</td>
+        <td>${player["Player Name"] || ""}</td>
+        <td>${player["Age"] || ""}</td>
+        <td>${formatDateOnly(player["Date of Birth"])}</td>
+        <td>${player["Parent Name"] || ""}</td>
+        <td>${player["Parent Phone"] || ""}</td>
+        <td>${player["Emirates ID"] || ""}</td>
+        <td><span class="badge">مسجل</span></td>
+      `;
+
+      tbody.appendChild(row);
+    });
+
+    statusBox.style.display = "none";
+    table.style.display = "table";
+  }
+
+  function formatDate(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (isNaN(date)) return value;
+
+    return date.toLocaleString("ar-AE", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
+  }
+
+  function formatDateOnly(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (isNaN(date)) return value;
+
+    return date.toLocaleDateString("ar-AE", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit"
+    });
+  }
+
+  searchInput.addEventListener("input", function() {
+    const keyword = searchInput.value.toLowerCase().trim();
+
+    const filtered = allPlayers.filter(player => {
+      return JSON.stringify(player).toLowerCase().includes(keyword);
+    });
+
+    renderPlayers(filtered);
+  });
+
+  loadPlayers();
+</script>
+
+</body>
+</html>
