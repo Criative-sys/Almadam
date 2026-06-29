@@ -314,7 +314,33 @@
       margin-top:15px;
       flex-wrap:wrap;
     }
+.nav-tabs {
+  max-width:1250px;
+  margin:18px auto 0;
+  padding:0 18px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
 
+.nav-tabs button {
+  background:white;
+  color:#6b0614;
+  border:1px solid #eee;
+}
+
+.nav-tabs button.active {
+  background:linear-gradient(135deg,#d4a653,#b88732);
+  color:white;
+}
+
+.section {
+  display:none;
+}
+
+.section.active {
+  display:block;
+}
     @media(max-width:900px) {
       .stats, .stage-grid {
         grid-template-columns:1fr;
@@ -369,94 +395,120 @@
       <button class="gray" onclick="logout()">تسجيل الخروج</button>
     </div>
   </div>
-</header>
+</header
+  
+<div class="nav-tabs">
+  <button class="active" onclick="showSection('dashboardSection', this)">🏠 Dashboard</button>
+  <button onclick="showSection('playersSection', this)">👥 Players</button>
+  <button onclick="showSection('evaluationSection', this)">🎯 Evaluation Queue</button>
+  <button onclick="showSection('talentsSection', this)">🏆 Talents</button>
+  <button onclick="showSection('statisticsSection', this)">📊 Statistics</button>
+</div>
 
 <main class="container">
 
-<div class="stats">
-  <div class="stat">
-    <h3>إجمالي اللاعبين</h3>
-    <div class="num" id="totalPlayers">0</div>
-  </div>
+  <section id="dashboardSection" class="section active">
+    <div class="stats">
+      <div class="stat">
+        <h3>إجمالي اللاعبين</h3>
+        <div class="num" id="totalPlayers">0</div>
+      </div>
 
-  <div class="stat">
-    <h3>المرحلة الأولى</h3>
-    <div class="num" id="stage1Count">0</div>
-  </div>
+      <div class="stat">
+        <h3>المرحلة الأولى</h3>
+        <div class="num" id="stage1Count">0</div>
+      </div>
 
-  <div class="stat">
-    <h3>المرحلة الثانية</h3>
-    <div class="num" id="stage2Count">0</div>
-  </div>
+      <div class="stat">
+        <h3>المرحلة الثانية</h3>
+        <div class="num" id="stage2Count">0</div>
+      </div>
 
-  <div class="stat">
-    <h3>المرحلة الثالثة</h3>
-    <div class="num" id="stage3Count">0</div>
-  </div>
+      <div class="stat">
+        <h3>المرحلة الثالثة</h3>
+        <div class="num" id="stage3Count">0</div>
+      </div>
 
-  <div class="stat">
-    <h3>مكتمل</h3>
-    <div class="num" id="completedCount">0</div>
-  </div>
+      <div class="stat">
+        <h3>مكتمل</h3>
+        <div class="num" id="completedCount">0</div>
+      </div>
 
-  <div class="stat">
-    <h3>إعادة تقييم</h3>
-    <div class="num" id="reevalCount">0</div>
-  </div>
+      <div class="stat">
+        <h3>إعادة تقييم</h3>
+        <div class="num" id="reevalCount">0</div>
+      </div>
 
-  <div class="stat">
-    <h3>نسبة الإنجاز</h3>
-    <div class="num" id="passRate">0%</div>
-  </div>
+      <div class="stat">
+        <h3>نسبة الإنجاز</h3>
+        <div class="num" id="passRate">0%</div>
+      </div>
 
-  <div class="stat">
-    <h3>متوسط العمر</h3>
-    <div class="num" id="avgAge">0</div>
-  </div>
-</div>
+      <div class="stat">
+        <h3>متوسط العمر</h3>
+        <div class="num" id="avgAge">0</div>
+      </div>
+    </div>
 
-<div class="table-card" style="margin-bottom:20px;padding:20px;">
-  <h3 style="color:#6b0614;margin-top:0;">توزيع اللاعبين حسب المرحلة</h3>
+    <div class="table-card" style="margin-bottom:20px;padding:20px;">
+      <h3 style="color:#6b0614;margin-top:0;">توزيع اللاعبين حسب المرحلة</h3>
+      <div id="chartBox"></div>
+    </div>
+  </section>
 
-  <div id="chartBox"></div>
-</div>
+  <section id="playersSection" class="section">
+    <div class="toolbar">
+      <input id="searchInput" placeholder="ابحث باسم اللاعب أو الهوية أو رقم الهاتف...">
+      <button onclick="loadPlayers()">تحديث البيانات</button>
+    </div>
 
-  <div class="table-card" style="margin-bottom:20px;padding:20px;">
-  <h3 style="color:#6b0614;margin-top:0;">⭐ المواهب المعتمدة</h3>
-  <div id="talentedBox"></div>
-</div>
-  
-  <div class="toolbar">
-    <input id="searchInput" placeholder="ابحث باسم اللاعب أو الهوية أو رقم الهاتف...">
-    <button onclick="loadPlayers()">تحديث البيانات</button>
-  </div>
+    <div class="table-card">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>اسم اللاعب</th>
+            <th>رقم الموهوب</th>
+            <th>العمر</th>
+            <th>ولي الأمر</th>
+            <th>الهاتف</th>
+            <th>الهوية</th>
+            <th>المرحلة الحالية</th>
+            <th>الملف</th>
+            <th>تعديل</th>
+            <th>أرشفة</th>
+            <th>التقييم</th>
+          </tr>
+        </thead>
+        <tbody id="playersBody">
+          <tr><td colspan="12">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
 
-  <div class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th>
-          <th>اسم اللاعب</th>
-          <th>رقم الموهوب</th>
-          <th>العمر</th>
-          <th>ولي الأمر</th>
-          <th>الهاتف</th>
-          <th>الهوية</th>
-          <th>المرحلة الحالية</th>
-          <th>الملف</th>
-          <th>تعديل</th>
-          <th>أرشفة</th>
-          <th>التقييم</th>
-        </tr>
-      </thead>
-      <tbody id="playersBody">
-        <tr><td colspan="12">جاري التحميل...</td></tr>
-      </tbody>
-    </table>
-  </div>
+  <section id="evaluationSection" class="section">
+    <div class="table-card" style="padding:20px;">
+      <h3 style="color:#6b0614;margin-top:0;">🎯 قائمة التقييم</h3>
+      <div id="evaluationQueue"></div>
+    </div>
+  </section>
+
+  <section id="talentsSection" class="section">
+    <div class="table-card" style="padding:20px;">
+      <h3 style="color:#6b0614;margin-top:0;">🏆 قاعة المواهب</h3>
+      <div id="talentedBox"></div>
+    </div>
+  </section>
+
+  <section id="statisticsSection" class="section">
+    <div class="table-card" style="padding:20px;">
+      <h3 style="color:#6b0614;margin-top:0;">📊 الإحصائيات</h3>
+      <div id="chartBoxStats"></div>
+    </div>
+  </section>
 
 </main>
-</section>
 
 <div class="modal" id="profileModal">
   <div class="modal-box">
@@ -620,6 +672,21 @@ function logout() {
   showLogin();
 }
 
+function showSection(sectionId, btn) {
+
+  document.querySelectorAll(".section").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  document.getElementById(sectionId).classList.add("active");
+
+  document.querySelectorAll(".nav-tabs button").forEach(button => {
+    button.classList.remove("active");
+  });
+
+  btn.classList.add("active");
+}
+  
 async function loadPlayers() {
   document.getElementById("playersBody").innerHTML =
     `<tr><td colspan="12">جاري تحميل البيانات...</td></tr>`;
@@ -705,7 +772,9 @@ function updateStats(players) {
     { label: "مكتمل", value: completed },
     { label: "إعادة تقييم", value: reeval }
   ]);
-  renderTalented(players);
+  renderEvaluationQueue(players);
+renderTalented(players);
+renderStatistics(players);
 }
 
 function renderStageChart(items) {
@@ -819,6 +888,65 @@ function renderTalented(players) {
   `;
 }
 
+function renderEvaluationQueue(players){
+
+    const queue = players.filter(p=>p["Next Stage"]!=="Completed");
+
+    const box=document.getElementById("evaluationQueue");
+
+    if(queue.length===0){
+        box.innerHTML="<div class='info'>لا يوجد لاعبون بانتظار التقييم.</div>";
+        return;
+    }
+
+    box.innerHTML=queue.map(player=>`
+
+        <div class="info">
+
+            <strong>${player["Player Name"]}</strong><br>
+
+            رقم الموهوب :
+            ${player["Talent ID"]}
+
+            <br><br>
+
+            المرحلة الحالية :
+
+            <strong>${player["Arabic Stage"]}</strong>
+
+            <br><br>
+
+            <button onclick="openEvaluationByTalentId('${player["Talent ID"]}')">
+
+                تقييم اللاعب
+
+            </button>
+
+        </div>
+
+    `).join("");
+
+}
+
+function openEvaluationByTalentId(id){
+
+    const index=currentPlayers.findIndex(p=>p["Talent ID"]===id);
+
+    if(index!==-1){
+
+        openEvaluation(index);
+
+    }
+
+}
+
+function renderStatistics(players){
+
+    document.getElementById("chartBoxStats").innerHTML=
+
+        document.getElementById("chartBox").innerHTML;
+
+}  
 function openProfileByTalentId(talentId) {
   const index = currentPlayers.findIndex(p => p["Talent ID"] === talentId);
 
