@@ -512,6 +512,26 @@
     </div>
   </div>
 </div>
+
+<div class="modal" id="hallModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>إضافة إلى قاعة المواهب</h2>
+      <p>اعتماد اللاعب كموهبة رياضية</p>
+    </div>
+
+    <div class="modal-body">
+      <input id="hallSport" placeholder="الرياضة المرشحة">
+      <input id="hallScore" placeholder="النسبة / الدرجة">
+      <textarea id="hallNotes" placeholder="ملاحظات"></textarea>
+
+      <div class="actions">
+        <button onclick="saveHall()">حفظ</button>
+        <button class="gray" onclick="closeHall()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
   
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
@@ -635,6 +655,7 @@ function renderPlayers(players) {
         <td><button onclick="openEdit(${i})">تعديل</button></td>
         <td><button class="gray" onclick="archivePlayer(${i})">أرشفة</button></td>
         <td><button onclick="openEvaluation(${i})">تقييم</button></td>
+        <td><button onclick="openHall(${i})">⭐ موهبة</button></td>
       </tr>
     `;
   });
@@ -949,6 +970,48 @@ async function archivePlayer(index) {
   } catch (e) {
     alert("حدث خطأ أثناء الأرشفة");
   }
+}
+
+let hallPlayer = null;
+
+function openHall(index) {
+  hallPlayer = currentPlayers[index];
+
+  if (hallPlayer["Next Stage"] !== "Completed") {
+    alert("يفضل إضافة اللاعب بعد اكتمال المراحل.");
+  }
+
+  document.getElementById("hallSport").value = "";
+  document.getElementById("hallScore").value = "";
+  document.getElementById("hallNotes").value = "";
+
+  document.getElementById("hallModal").style.display = "flex";
+}
+
+function closeHall() {
+  document.getElementById("hallModal").style.display = "none";
+}
+
+async function saveHall() {
+  const data = new URLSearchParams();
+
+  data.append("action", "addToHall");
+  data.append("talentId", hallPlayer["Talent ID"] || "");
+  data.append("playerName", hallPlayer["Player Name"] || "");
+  data.append("emiratesId", hallPlayer["Emirates ID"] || "");
+  data.append("sport", document.getElementById("hallSport").value);
+  data.append("score", document.getElementById("hallScore").value);
+  data.append("notes", document.getElementById("hallNotes").value);
+  data.append("addedBy", localStorage.getItem("talentUser") || "");
+
+  await fetch(SCRIPT_URL, {
+    method: "POST",
+    mode: "no-cors",
+    body: data
+  });
+
+  alert("تمت إضافة اللاعب إلى قاعة المواهب ⭐");
+  closeHall();
 }
   
 function printPlayerReport() {
