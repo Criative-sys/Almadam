@@ -636,9 +636,10 @@ function openProfile(index) {
       ${stageCard("المرحلة الثالثة", p["Stage 3"])}
     </div>
 
-    <div class="actions">
-      <button class="gray" onclick="closeProfile()">إغلاق</button>
-    </div>
+<div class="actions">
+  <button onclick="printPlayerReport()">طباعة التقرير</button>
+  <button class="gray" onclick="closeProfile()">إغلاق</button>
+</div>
   `;
 
   document.getElementById("profileModal").style.display = "flex";
@@ -756,6 +757,131 @@ document.getElementById("searchInput").addEventListener("input", function() {
   renderPlayers(filtered);
 });
 
+function printPlayerReport() {
+  const content = document.getElementById("profileBody").innerHTML;
+
+  const printWindow = window.open("", "_blank");
+
+  printWindow.document.write(`
+    <html dir="rtl" lang="ar">
+    <head>
+      <title>تقرير اللاعب</title>
+      <style>
+        body {
+          font-family: Tahoma, Arial, sans-serif;
+          padding: 30px;
+          color: #1f2937;
+        }
+
+        .report-header {
+          text-align: center;
+          border-bottom: 4px solid #6b0614;
+          padding-bottom: 20px;
+          margin-bottom: 25px;
+        }
+
+        .report-header h1 {
+          color: #6b0614;
+          margin: 0;
+        }
+
+        .report-header p {
+          color: #667085;
+          margin: 8px 0 0;
+        }
+
+        .info, .stage-card {
+          border: 1px solid #ddd;
+          border-radius: 14px;
+          padding: 16px;
+          margin-bottom: 15px;
+          line-height: 1.8;
+        }
+
+        .stage-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 12px;
+        }
+
+        .stage-card h3 {
+          color: #6b0614;
+          margin-top: 0;
+        }
+
+        .badge {
+          display: inline-block;
+          padding: 6px 10px;
+          border-radius: 999px;
+          font-weight: bold;
+          background: #fff7ed;
+          color: #c2410c;
+        }
+
+        .green {
+          background: #ecfdf3;
+          color: #027a48;
+        }
+
+        .orange {
+          background: #fff7ed;
+          color: #c2410c;
+        }
+
+        .red {
+          background: #fef3f2;
+          color: #b42318;
+        }
+
+        .actions {
+          display: none;
+        }
+
+        .signature {
+          margin-top: 60px;
+          display: flex;
+          justify-content: space-between;
+        }
+
+        .signature div {
+          width: 40%;
+          border-top: 1px solid #333;
+          padding-top: 10px;
+          text-align: center;
+        }
+
+        @media print {
+          button {
+            display: none;
+          }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="report-header">
+        <h1>تقرير مسار الموهبة الرياضية</h1>
+        <p>نادي المدام الثقافي الرياضي</p>
+      </div>
+
+      ${content}
+
+      <div class="signature">
+        <div>توقيع المقيّم</div>
+        <div>اعتماد الإدارة</div>
+      </div>
+
+      <script>
+        window.onload = function() {
+          window.print();
+        };
+      <\/script>
+    </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+}
+  
 function formatDate(value) {
   if (!value) return "";
   const d = new Date(value);
