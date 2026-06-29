@@ -413,11 +413,12 @@
           <th>الهوية</th>
           <th>المرحلة الحالية</th>
           <th>الملف</th>
+          <th>تعديل</th>
           <th>التقييم</th>
         </tr>
       </thead>
       <tbody id="playersBody">
-        <tr><td colspan="10">جاري التحميل...</td></tr>
+        <tr><td colspan="11">جاري التحميل...</td></tr>
       </tbody>
     </table>
   </div>
@@ -460,6 +461,31 @@
   </div>
 </div>
 
+<div class="modal" id="editModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>تعديل بيانات اللاعب</h2>
+      <p>تحديث بيانات التسجيل</p>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" id="editTalentId">
+
+      <input id="editPlayerName" placeholder="اسم اللاعب">
+      <input id="editAge" type="number" placeholder="العمر">
+      <input id="editDob" type="date">
+      <input id="editParentName" placeholder="اسم ولي الأمر">
+      <input id="editParentPhone" placeholder="رقم الهاتف">
+      <input id="editEmiratesId" placeholder="رقم الهوية الإماراتية">
+
+      <div class="actions">
+        <button onclick="saveEdit()">حفظ التعديل</button>
+        <button class="gray" onclick="closeEdit()">إغلاق</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
 
@@ -544,7 +570,7 @@ function logout() {
 
 async function loadPlayers() {
   document.getElementById("playersBody").innerHTML =
-    `<tr><td colspan="10">جاري تحميل البيانات...</td></tr>`;
+    `<tr><td colspan="11">جاري تحميل البيانات...</td></tr>`;
 
   try {
     const res = await fetch(`${SCRIPT_URL}?action=getPlayers`);
@@ -553,7 +579,7 @@ async function loadPlayers() {
     updateStats(allPlayers);
   } catch(e) {
     document.getElementById("playersBody").innerHTML =
-      `<tr><td colspan="10">خطأ في تحميل البيانات</td></tr>`;
+      `<tr><td colspan="11">خطأ في تحميل البيانات</td></tr>`;
   }
 }
 
@@ -563,7 +589,7 @@ function renderPlayers(players) {
   body.innerHTML = "";
 
   if (!players.length) {
-    body.innerHTML = `<tr><td colspan="10">لا توجد بيانات</td></tr>`;
+    body.innerHTML = `<tr><td colspan="11">لا توجد بيانات</td></tr>`;
     return;
   }
 
@@ -579,6 +605,7 @@ function renderPlayers(players) {
         <td>${p["Emirates ID"] || ""}</td>
         <td>${stageBadge(p["Next Stage"])}</td>
         <td><button onclick="openProfile(${i})">عرض الملف</button></td>
+        <td><button onclick="openEdit(${i})">تعديل</button></td>
         <td><button onclick="openEvaluation(${i})">تقييم</button></td>
       </tr>
     `;
@@ -761,6 +788,59 @@ document.getElementById("searchInput").addEventListener("input", function() {
   renderPlayers(filtered);
 });
 
+function openEdit(index) {
+  selectedPlayer = currentPlayers[index];
+
+  document.getElementById("editTalentId").value = selectedPlayer["Talent ID"] || "";
+  document.getElementById("editPlayerName").value = selectedPlayer["Player Name"] || "";
+  document.getElementById("editAge").value = selectedPlayer["Age"] || "";
+  document.getElementById("editDob").value = formatInputDate(selectedPlayer["Date of Birth"]);
+  document.getElementById("editParentName").value = selectedPlayer["Parent Name"] || "";
+  document.getElementById("editParentPhone").value = selectedPlayer["Parent Phone"] || "";
+  document.getElementById("editEmiratesId").value = selectedPlayer["Emirates ID"] || "";
+
+  document.getElementById("editModal").style.display = "flex";
+}
+
+function closeEdit() {
+  document.getElementById("editModal").style.display = "none";
+}
+
+async function saveEdit() {
+  const data = new URLSearchParams();
+
+  data.append("action", "updatePlayer");
+  data.append("talentId", document.getElementById("editTalentId").value);
+  data.append("playerName", document.getElementById("editPlayerName").value);
+  data.append("age", document.getElementById("editAge").value);
+  data.append("dob", document.getElementById("editDob").value);
+  data.append("parentName", document.getElementById("editParentName").value);
+  data.append("parentPhone", document.getElementById("editParentPhone").value);
+  data.append("emiratesId", document.getElementById("editEmiratesId").value);
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: data
+    });
+
+    alert("تم تعديل بيانات اللاعب ✅");
+    closeEdit();
+    setTimeout(loadPlayers, 800);
+
+  } catch (e) {
+    alert("حدث خطأ أثناء التعديل");
+  }
+}
+
+function formatInputDate(value) {
+  if (!value) return "";
+  const d = new Date(value);
+  if (isNaN(d)) return value;
+  return d.toISOString().split("T")[0];
+}
+  
 function printPlayerReport() {
   const content = document.getElementById("profileBody").innerHTML;
 
