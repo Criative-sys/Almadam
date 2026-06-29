@@ -421,6 +421,11 @@
   <div id="chartBox"></div>
 </div>
 
+  <div class="table-card" style="margin-bottom:20px;padding:20px;">
+  <h3 style="color:#6b0614;margin-top:0;">⭐ المواهب المعتمدة</h3>
+  <div id="talentedBox"></div>
+</div>
+  
   <div class="toolbar">
     <input id="searchInput" placeholder="ابحث باسم اللاعب أو الهوية أو رقم الهاتف...">
     <button onclick="loadPlayers()">تحديث البيانات</button>
@@ -655,7 +660,6 @@ function renderPlayers(players) {
         <td><button onclick="openEdit(${i})">تعديل</button></td>
         <td><button class="gray" onclick="archivePlayer(${i})">أرشفة</button></td>
         <td><button onclick="openEvaluation(${i})">تقييم</button></td>
-        <td><button onclick="openHall(${i})">⭐ موهبة</button></td>
       </tr>
     `;
   });
@@ -701,6 +705,7 @@ function updateStats(players) {
     { label: "مكتمل", value: completed },
     { label: "إعادة تقييم", value: reeval }
   ]);
+  renderTalented(players);
 }
 
 function renderStageChart(items) {
@@ -727,6 +732,27 @@ function renderStageChart(items) {
       </div>
     `;
   }).join("");
+}
+
+function renderTalented(players) {
+  const talented = players.filter(p => p["Next Stage"] === "Completed");
+
+  const box = document.getElementById("talentedBox");
+
+  if (talented.length === 0) {
+    box.innerHTML = `<div class="info">لا توجد مواهب مكتملة حالياً.</div>`;
+    return;
+  }
+
+  box.innerHTML = talented.map(p => `
+    <div class="info" style="border-right:5px solid #d4a653;">
+      <strong>⭐ ${p["Player Name"] || ""}</strong><br>
+      رقم الموهوب: ${p["Talent ID"] || ""}<br>
+      العمر: ${p["Age"] || ""}<br>
+      الهوية: ${p["Emirates ID"] || ""}<br>
+      الحالة: موهبة مكتملة ومعتمدة
+    </div>
+  `).join("");
 }
   
 function stageBadge(stage) {
