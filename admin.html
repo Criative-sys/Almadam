@@ -316,22 +316,30 @@
     }
 .nav-tabs {
   max-width:1250px;
-  margin:18px auto 0;
-  padding:0 18px;
+  margin:0 auto;
+  padding:14px 18px;
   display:flex;
   gap:10px;
   flex-wrap:wrap;
+  justify-content:flex-end;
 }
 
 .nav-tabs button {
   background:white;
   color:#6b0614;
-  border:1px solid #eee;
+  border:1px solid #ead7a7;
+  box-shadow:0 8px 20px rgba(0,0,0,.06);
+  transition:.2s;
+}
+
+.nav-tabs button:hover {
+  transform:translateY(-2px);
 }
 
 .nav-tabs button.active {
-  background:linear-gradient(135deg,#d4a653,#b88732);
-  color:white;
+  background:linear-gradient(135deg,#6b0614,#32030d);
+  color:#d4a653;
+  border-color:#d4a653;
 }
 
 .section {
@@ -395,14 +403,14 @@
       <button class="gray" onclick="logout()">تسجيل الخروج</button>
     </div>
   </div>
-</header
+</header>
   
 <div class="nav-tabs">
-  <button class="active" onclick="showSection('dashboardSection', this)">🏠 Dashboard</button>
-  <button onclick="showSection('playersSection', this)">👥 Players</button>
-  <button onclick="showSection('evaluationSection', this)">🎯 Evaluation Queue</button>
-  <button onclick="showSection('talentsSection', this)">🏆 Talents</button>
-  <button onclick="showSection('statisticsSection', this)">📊 Statistics</button>
+  <button class="active" onclick="showSection('dashboardSection', this)">🏠 الرئيسية</button>
+  <button onclick="showSection('playersSection', this)">👥 اللاعبين</button>
+  <button onclick="showSection('evaluationSection', this)">🎯 قائمة التقييم</button>
+  <button onclick="showSection('talentsSection', this)">🏆 المواهب</button>
+  <button onclick="showSection('statisticsSection', this)">📊 الإحصائيات</button>
 </div>
 
 <main class="container">
