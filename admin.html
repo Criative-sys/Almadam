@@ -417,7 +417,7 @@
         </tr>
       </thead>
       <tbody id="playersBody">
-        <tr><td colspan="9">جاري التحميل...</td></tr>
+        <tr><td colspan="10">جاري التحميل...</td></tr>
       </tbody>
     </table>
   </div>
@@ -544,7 +544,7 @@ function logout() {
 
 async function loadPlayers() {
   document.getElementById("playersBody").innerHTML =
-    `<tr><td colspan="9">جاري تحميل البيانات...</td></tr>`;
+    `<tr><td colspan="10">جاري تحميل البيانات...</td></tr>`;
 
   try {
     const res = await fetch(`${SCRIPT_URL}?action=getPlayers`);
@@ -553,7 +553,7 @@ async function loadPlayers() {
     updateStats(allPlayers);
   } catch(e) {
     document.getElementById("playersBody").innerHTML =
-      `<tr><td colspan="9">خطأ في تحميل البيانات</td></tr>`;
+      `<tr><td colspan="10">خطأ في تحميل البيانات</td></tr>`;
   }
 }
 
@@ -563,7 +563,7 @@ function renderPlayers(players) {
   body.innerHTML = "";
 
   if (!players.length) {
-    body.innerHTML = `<tr><td colspan="9">لا توجد بيانات</td></tr>`;
+    body.innerHTML = `<tr><td colspan="10">لا توجد بيانات</td></tr>`;
     return;
   }
 
@@ -724,6 +724,7 @@ async function saveEvaluation() {
   const data = new URLSearchParams();
   data.append("action", "saveEvaluation");
   data.append("playerName", selectedPlayer["Player Name"] || "");
+  data.append("talentId", selectedPlayer["Talent ID"] || "");
   data.append("emiratesId", selectedPlayer["Emirates ID"] || "");
   data.append("stage", selectedStage);
   data.append("item1", checks[0]);
