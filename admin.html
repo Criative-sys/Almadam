@@ -406,6 +406,7 @@
         <tr>
           <th>#</th>
           <th>اسم اللاعب</th>
+          <th>رقم الموهوب</th>
           <th>العمر</th>
           <th>ولي الأمر</th>
           <th>الهاتف</th>
@@ -571,6 +572,7 @@ function renderPlayers(players) {
       <tr>
         <td>${i + 1}</td>
         <td>${p["Player Name"] || ""}</td>
+        <td>${p["Talent ID"] || ""}</td>
         <td>${p["Age"] || ""}</td>
         <td>${p["Parent Name"] || ""}</td>
         <td>${p["Parent Phone"] || ""}</td>
@@ -623,6 +625,7 @@ function openProfile(index) {
   document.getElementById("profileBody").innerHTML = `
     <div class="info">
       <strong>اسم اللاعب:</strong> ${p["Player Name"] || ""}<br>
+      <strong>رقم الموهوب:</strong> ${p["Talent ID"] || ""}<br>
       <strong>العمر:</strong> ${p["Age"] || ""}<br>
       <strong>تاريخ الميلاد:</strong> ${formatDate(p["Date of Birth"])}<br>
       <strong>ولي الأمر:</strong> ${p["Parent Name"] || ""}<br>
