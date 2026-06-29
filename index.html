@@ -441,14 +441,30 @@
     data.append("emiratesId", emiratesId);
 
     try {
-      await fetch(SCRIPT_URL, {
-        method: "POST",
-        mode: "no-cors",
-        body: data
-      });
+const response = await fetch(SCRIPT_URL, {
+  method: "POST",
+  body: data
+});
 
-      showMessage("تم التسجيل بنجاح ✅", "success");
-      form.reset();
+const result = await response.text();
+
+if (result.includes("duplicate_emirates_id")) {
+  showMessage("رقم الهوية الإماراتية مسجل مسبقاً.", "error");
+  return;
+}
+
+if (result.includes("success")) {
+  showMessage("تم التسجيل بنجاح ✅", "success");
+  form.reset();
+  return;
+}
+
+if (result.includes("missing_data")) {
+  showMessage("يرجى تعبئة جميع البيانات المطلوبة.", "error");
+  return;
+}
+
+showMessage("حدث خطأ أثناء الإرسال.", "error");
 
     } catch (error) {
       showMessage("حدث خطأ أثناء الإرسال. حاول مرة أخرى.", "error");
