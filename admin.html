@@ -414,11 +414,12 @@
           <th>المرحلة الحالية</th>
           <th>الملف</th>
           <th>تعديل</th>
+          <th>أرشفة</th>
           <th>التقييم</th>
         </tr>
       </thead>
       <tbody id="playersBody">
-        <tr><td colspan="11">جاري التحميل...</td></tr>
+        <tr><td colspan="12">جاري التحميل...</td></tr>
       </tbody>
     </table>
   </div>
@@ -570,7 +571,7 @@ function logout() {
 
 async function loadPlayers() {
   document.getElementById("playersBody").innerHTML =
-    `<tr><td colspan="11">جاري تحميل البيانات...</td></tr>`;
+    `<tr><td colspan="12">جاري تحميل البيانات...</td></tr>`;
 
   try {
     const res = await fetch(`${SCRIPT_URL}?action=getPlayers`);
@@ -579,7 +580,7 @@ async function loadPlayers() {
     updateStats(allPlayers);
   } catch(e) {
     document.getElementById("playersBody").innerHTML =
-      `<tr><td colspan="11">خطأ في تحميل البيانات</td></tr>`;
+      `<tr><td colspan="12">خطأ في تحميل البيانات</td></tr>`;
   }
 }
 
@@ -589,7 +590,7 @@ function renderPlayers(players) {
   body.innerHTML = "";
 
   if (!players.length) {
-    body.innerHTML = `<tr><td colspan="11">لا توجد بيانات</td></tr>`;
+    body.innerHTML = `<tr><td colspan="12">لا توجد بيانات</td></tr>`;
     return;
   }
 
@@ -606,6 +607,7 @@ function renderPlayers(players) {
         <td>${stageBadge(p["Next Stage"])}</td>
         <td><button onclick="openProfile(${i})">عرض الملف</button></td>
         <td><button onclick="openEdit(${i})">تعديل</button></td>
+        <td><button class="gray" onclick="archivePlayer(${i})">أرشفة</button></td>
         <td><button onclick="openEvaluation(${i})">تقييم</button></td>
       </tr>
     `;
@@ -839,6 +841,30 @@ function formatInputDate(value) {
   const d = new Date(value);
   if (isNaN(d)) return value;
   return d.toISOString().split("T")[0];
+}
+
+async function archivePlayer(index) {
+  const player = currentPlayers[index];
+
+  if (!confirm("هل أنت متأكد من أرشفة هذا اللاعب؟")) return;
+
+  const data = new URLSearchParams();
+  data.append("action", "archivePlayer");
+  data.append("talentId", player["Talent ID"] || "");
+
+  try {
+    await fetch(SCRIPT_URL, {
+      method: "POST",
+      mode: "no-cors",
+      body: data
+    });
+
+    alert("تمت أرشفة اللاعب ✅");
+    setTimeout(loadPlayers, 800);
+
+  } catch (e) {
+    alert("حدث خطأ أثناء الأرشفة");
+  }
 }
   
 function printPlayerReport() {
