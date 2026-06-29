@@ -373,27 +373,53 @@
 
 <main class="container">
 
-  <div class="stats">
-    <div class="stat">
-      <h3>إجمالي اللاعبين</h3>
-      <div class="num" id="totalPlayers">0</div>
-    </div>
-
-    <div class="stat">
-      <h3>المرحلة الأولى</h3>
-      <div class="num" id="stage1Count">0</div>
-    </div>
-
-    <div class="stat">
-      <h3>المرحلة الثانية</h3>
-      <div class="num" id="stage2Count">0</div>
-    </div>
-
-    <div class="stat">
-      <h3>مكتمل</h3>
-      <div class="num" id="completedCount">0</div>
-    </div>
+<div class="stats">
+  <div class="stat">
+    <h3>إجمالي اللاعبين</h3>
+    <div class="num" id="totalPlayers">0</div>
   </div>
+
+  <div class="stat">
+    <h3>المرحلة الأولى</h3>
+    <div class="num" id="stage1Count">0</div>
+  </div>
+
+  <div class="stat">
+    <h3>المرحلة الثانية</h3>
+    <div class="num" id="stage2Count">0</div>
+  </div>
+
+  <div class="stat">
+    <h3>المرحلة الثالثة</h3>
+    <div class="num" id="stage3Count">0</div>
+  </div>
+
+  <div class="stat">
+    <h3>مكتمل</h3>
+    <div class="num" id="completedCount">0</div>
+  </div>
+
+  <div class="stat">
+    <h3>إعادة تقييم</h3>
+    <div class="num" id="reevalCount">0</div>
+  </div>
+
+  <div class="stat">
+    <h3>نسبة الإنجاز</h3>
+    <div class="num" id="passRate">0%</div>
+  </div>
+
+  <div class="stat">
+    <h3>متوسط العمر</h3>
+    <div class="num" id="avgAge">0</div>
+  </div>
+</div>
+
+<div class="table-card" style="margin-bottom:20px;padding:20px;">
+  <h3 style="color:#6b0614;margin-top:0;">توزيع اللاعبين حسب المرحلة</h3>
+
+  <div id="chartBox"></div>
+</div>
 
   <div class="toolbar">
     <input id="searchInput" placeholder="ابحث باسم اللاعب أو الهوية أو رقم الهاتف...">
@@ -615,15 +641,73 @@ function renderPlayers(players) {
 }
 
 function updateStats(players) {
-  document.getElementById("totalPlayers").textContent = players.length;
-  document.getElementById("stage1Count").textContent =
-    players.filter(p => p["Next Stage"] === "Stage 1").length;
-  document.getElementById("stage2Count").textContent =
-    players.filter(p => p["Next Stage"] === "Stage 2").length;
-  document.getElementById("completedCount").textContent =
-    players.filter(p => p["Next Stage"] === "Completed").length;
+  const total = players.length;
+
+  const stage1 = players.filter(p => p["Next Stage"] === "Stage 1").length;
+  const stage2 = players.filter(p => p["Next Stage"] === "Stage 2").length;
+  const stage3 = players.filter(p => p["Next Stage"] === "Stage 3").length;
+  const completed = players.filter(p => p["Next Stage"] === "Completed").length;
+
+  const reeval = players.filter(p =>
+    String(p["Arabic Stage"] || "").includes("إعادة تقييم")
+  ).length;
+
+  const ages = players
+    .map(p => Number(p["Age"]))
+    .filter(age => !isNaN(age));
+
+  const avgAge = ages.length
+    ? (ages.reduce((a, b) => a + b, 0) / ages.length).toFixed(1)
+    : 0;
+
+  const passRate = total
+    ? Math.round(((stage2 + stage3 + completed) / total) * 100)
+    : 0;
+
+  document.getElementById("totalPlayers").textContent = total;
+  document.getElementById("stage1Count").textContent = stage1;
+  document.getElementById("stage2Count").textContent = stage2;
+  document.getElementById("stage3Count").textContent = stage3;
+  document.getElementById("completedCount").textContent = completed;
+  document.getElementById("reevalCount").textContent = reeval;
+  document.getElementById("passRate").textContent = passRate + "%";
+  document.getElementById("avgAge").textContent = avgAge;
+
+  renderStageChart([
+    { label: "المرحلة الأولى", value: stage1 },
+    { label: "المرحلة الثانية", value: stage2 },
+    { label: "المرحلة الثالثة", value: stage3 },
+    { label: "مكتمل", value: completed },
+    { label: "إعادة تقييم", value: reeval }
+  ]);
 }
 
+function renderStageChart(items) {
+  const max = Math.max(...items.map(i => i.value), 1);
+
+  document.getElementById("chartBox").innerHTML = items.map(item => {
+    const width = Math.round((item.value / max) * 100);
+
+    return `
+      <div style="margin-bottom:14px;">
+        <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-weight:bold;">
+          <span>${item.label}</span>
+          <span>${item.value}</span>
+        </div>
+
+        <div style="height:14px;background:#f1f1f1;border-radius:999px;overflow:hidden;">
+          <div style="
+            height:100%;
+            width:${width}%;
+            background:linear-gradient(135deg,#d4a653,#6b0614);
+            border-radius:999px;
+          "></div>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+  
 function stageBadge(stage) {
   if (stage === "Stage 1") {
     return `<span class="badge orange">المرحلة الأولى</span>`;
