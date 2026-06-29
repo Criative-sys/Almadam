@@ -736,7 +736,6 @@ function renderStageChart(items) {
 
 function renderTalented(players) {
   const talented = players.filter(p => p["Next Stage"] === "Completed");
-
   const box = document.getElementById("talentedBox");
 
   if (talented.length === 0) {
@@ -744,15 +743,88 @@ function renderTalented(players) {
     return;
   }
 
-  box.innerHTML = talented.map(p => `
-    <div class="info" style="border-right:5px solid #d4a653;">
-      <strong>⭐ ${p["Player Name"] || ""}</strong><br>
-      رقم الموهوب: ${p["Talent ID"] || ""}<br>
-      العمر: ${p["Age"] || ""}<br>
-      الهوية: ${p["Emirates ID"] || ""}<br>
-      الحالة: موهبة مكتملة ومعتمدة
+  box.innerHTML = `
+    <div style="
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+      gap:18px;
+    ">
+      ${talented.map(p => `
+        <div style="
+          background:linear-gradient(160deg,#6b0614,#32030d);
+          border:2px solid #d4a653;
+          border-radius:22px;
+          padding:22px;
+          color:white;
+          box-shadow:0 15px 35px rgba(212,166,83,.35);
+          position:relative;
+          overflow:hidden;
+        ">
+          <div style="
+            position:absolute;
+            top:-40px;
+            left:-40px;
+            width:120px;
+            height:120px;
+            background:#d4a653;
+            opacity:.18;
+            border-radius:50%;
+          "></div>
+
+          <div style="font-size:28px;text-align:center;">⭐⭐⭐⭐⭐</div>
+
+          <h2 style="
+            text-align:center;
+            color:#d4a653;
+            margin:14px 0 8px;
+          ">
+            ${p["Player Name"] || ""}
+          </h2>
+
+          <div style="text-align:center;font-weight:bold;margin-bottom:14px;">
+            موهبة رياضية معتمدة
+          </div>
+
+          <div style="
+            background:rgba(255,255,255,.1);
+            border-radius:16px;
+            padding:14px;
+            line-height:1.9;
+          ">
+            <strong>رقم الموهوب:</strong> ${p["Talent ID"] || ""}<br>
+            <strong>العمر:</strong> ${p["Age"] || ""}<br>
+            <strong>الحالة:</strong> مكتمل
+          </div>
+
+          <div style="
+            margin-top:16px;
+            padding-top:12px;
+            border-top:1px solid rgba(255,255,255,.25);
+            line-height:1.9;
+          ">
+            ✅ اجتاز المرحلة الأولى<br>
+            ✅ اجتاز المرحلة الثانية<br>
+            ✅ اجتاز المرحلة الثالثة
+          </div>
+
+          <button onclick='openProfileByTalentId("${p["Talent ID"]}")' style="
+            width:100%;
+            margin-top:18px;
+          ">
+            عرض الملف
+          </button>
+        </div>
+      `).join("")}
     </div>
-  `).join("");
+  `;
+}
+
+function openProfileByTalentId(talentId) {
+  const index = currentPlayers.findIndex(p => p["Talent ID"] === talentId);
+
+  if (index !== -1) {
+    openProfile(index);
+  }
 }
   
 function stageBadge(stage) {
