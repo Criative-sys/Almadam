@@ -286,25 +286,43 @@
         height: 75px;
       }
     }
-    .admin-btn{
-    position:fixed;
-    top:20px;
-    right:20px;
-    z-index:999;
-    text-decoration:none;
-    background:#6b0614;
-    color:#fff;
-    padding:12px 18px;
-    border-radius:14px;
-    font-weight:bold;
-    box-shadow:0 10px 25px rgba(0,0,0,.25);
-    transition:.25s;
+.admin-btn{
+  position:fixed;
+  top:20px;
+  right:20px;
+  z-index:999;
+  text-decoration:none;
+  background:#6b0614;
+  color:#fff;
+  padding:12px 18px;
+  border-radius:14px;
+  font-weight:bold;
+  box-shadow:0 10px 25px rgba(0,0,0,.25);
+  transition:.25s;
+  white-space:nowrap;
 }
 
 .admin-btn:hover{
-    background:#d4a653;
-    color:#32030d;
-    transform:translateY(-2px);
+  background:#d4a653;
+  color:#32030d;
+  transform:translateY(-2px);
+}
+
+@media (max-width: 850px) {
+  .admin-btn{
+    top:auto;
+    right:16px;
+    left:16px;
+    bottom:16px;
+    text-align:center;
+    padding:14px;
+    border-radius:18px;
+    font-size:15px;
+  }
+
+  .page{
+    padding-bottom:85px;
+  }
 }
   </style>
 </head>
