@@ -1456,6 +1456,14 @@ function formatDate(value) {
   if (isNaN(d)) return value;
   return d.toLocaleDateString("ar-AE");
 }
+  document.addEventListener("keydown", function (event) {
+    if (
+        !document.getElementById("loginPage").classList.contains("hidden") &&
+        event.key === "Enter"
+    ) {
+        login();
+    }
+});
 </script>
 
 </body>
