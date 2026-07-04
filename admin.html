@@ -371,6 +371,32 @@
         width:100%;
       }
     }
+    .page-switch {
+  position: fixed;
+  bottom: 25px;
+  left: 25px;
+  z-index: 1000;
+}
+
+.page-switch a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  background: linear-gradient(135deg,#6b0614,#32030d);
+  color: white;
+  padding: 14px 20px;
+  border-radius: 16px;
+  font-weight: bold;
+  box-shadow: 0 12px 30px rgba(0,0,0,.25);
+  transition: .25s;
+}
+
+.page-switch a:hover {
+  background: linear-gradient(135deg,#d4a653,#b88732);
+  color: #32030d;
+  transform: translateY(-3px);
+}
   </style>
 </head>
 
@@ -597,7 +623,12 @@
     </div>
   </div>
 </div>
-  
+
+  <div class="page-switch">
+    <a href="index.html">
+        📝 صفحة التسجيل
+    </a>
+</div>
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGHC0QPf2-REo1wgsdBdUfWgOQQAttw7qKB86pVSU95b2gm7dkyxL55I2mBB3fU-lQ/exec";
 
