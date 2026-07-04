@@ -400,31 +400,45 @@
     transform:translateY(-2px);
 }
     
-    .page-switch {
-  position: fixed;
-  bottom: 25px;
-  left: 25px;
-  z-index: 1000;
+.page-switch {
+    position: fixed;
+    bottom: 25px;
+    left: 25px;
+    z-index: 1000;
 }
 
 .page-switch a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  background: linear-gradient(135deg,#6b0614,#32030d);
-  color: white;
-  padding: 14px 20px;
-  border-radius: 16px;
-  font-weight: bold;
-  box-shadow: 0 12px 30px rgba(0,0,0,.25);
-  transition: .25s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 16px 24px;
+
+    background: linear-gradient(135deg,#6b0614,#32030d);
+    color: white;
+
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 17px;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 12px 30px rgba(0,0,0,.28),
+        0 0 0 2px rgba(212,166,83,.15);
+
+    transition: .25s;
 }
 
-.page-switch a:hover {
-  background: linear-gradient(135deg,#d4a653,#b88732);
-  color: #32030d;
-  transform: translateY(-3px);
+.page-switch a:hover{
+    transform: translateY(-4px) scale(1.02);
+
+    background: linear-gradient(135deg,#d4a653,#b88732);
+
+    color:#32030d;
+
+    box-shadow:
+        0 18px 40px rgba(0,0,0,.35);
 }
   </style>
 </head>
@@ -441,16 +455,17 @@
 
     <button onclick="login()">دخول</button>
 
-<div class="login-links">
-    <a href="index.html" class="secondary-btn">
-        📝 صفحة التسجيل
-    </a>
-</div>
-
 <p id="loginMsg" style="color:#b42318;font-weight:bold;display:none;">
     بيانات الدخول غير صحيحة
 </p>
   </div>
+
+  <div class="page-switch">
+    <a href="index.html">
+        📝
+        <span>صفحة التسجيل</span>
+    </a>
+</div>
 </section>
 
 <section id="appPage" class="hidden">
