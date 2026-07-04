@@ -371,6 +371,35 @@
         width:100%;
       }
     }
+
+    .login-links{
+    margin-top:18px;
+    text-align:center;
+}
+
+.secondary-btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    width:100%;
+    margin-top:14px;
+    padding:13px;
+    border-radius:14px;
+    text-decoration:none;
+    background:#fff;
+    color:#6b0614;
+    border:2px solid #d4a653;
+    font-weight:bold;
+    transition:.25s;
+}
+
+.secondary-btn:hover{
+    background:#d4a653;
+    color:white;
+    transform:translateY(-2px);
+}
+    
     .page-switch {
   position: fixed;
   bottom: 25px;
@@ -411,7 +440,16 @@
     <input id="password" type="password" placeholder="كلمة المرور">
 
     <button onclick="login()">دخول</button>
-    <p id="loginMsg" style="color:#b42318;font-weight:bold;display:none;">بيانات الدخول غير صحيحة</p>
+
+<div class="login-links">
+    <a href="index.html" class="secondary-btn">
+        📝 صفحة التسجيل
+    </a>
+</div>
+
+<p id="loginMsg" style="color:#b42318;font-weight:bold;display:none;">
+    بيانات الدخول غير صحيحة
+</p>
   </div>
 </section>
 
