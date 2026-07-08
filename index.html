@@ -314,14 +314,70 @@
     padding-top:70px;
   }
 }
+
+.lock-page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:linear-gradient(135deg,#6b0614,#32030d);
+}
+
+.lock-box{
+  width:100%;
+  max-width:420px;
+  background:white;
+  padding:30px;
+  border-radius:24px;
+  text-align:center;
+  box-shadow:0 25px 70px rgba(0,0,0,.35);
+}
+
+.lock-box h1{
+  color:#6b0614;
+  margin-bottom:8px;
+}
+
+.lock-box p{
+  color:#667085;
+}
+
+.lock-box input{
+  margin-bottom:12px;
+}
+
+.lock-error{
+  display:none;
+  color:#b42318;
+  font-weight:bold;
+  margin-top:12px;
+}    
   </style>
 </head>
 
 <body>
+
+  <section id="lockPage" class="lock-page">
+  <div class="lock-box">
+    <h1>برنامج موهوب</h1>
+    <p>يرجى تسجيل الدخول لفتح صفحة التسجيل</p>
+
+    <input id="pageUser" placeholder="اسم المستخدم">
+    <input id="pagePass" type="password" placeholder="كلمة المرور">
+
+    <button onclick="unlockPage()">دخول</button>
+
+    <div id="lockError" class="lock-error">
+      بيانات الدخول غير صحيحة
+    </div>
+  </div>
+</section>
+  
   <a href="admin.html" class="admin-btn">
     ⚙️ لوحة الإدارة
 </a>
-  <main class="page">
+  <main id="registrationPage" class="page" style="display:none;">
     <section class="card">
 
       <div class="intro">
@@ -404,6 +460,31 @@
   const form = document.getElementById("talentForm");
   const submitBtn = document.getElementById("submitBtn");
   const message = document.getElementById("message");
+  function unlockPage(){
+  const user = document.getElementById("pageUser").value.trim();
+  const pass = document.getElementById("pagePass").value.trim();
+
+  if(user === "admin" && pass === "admin123"){
+    sessionStorage.setItem("registrationUnlocked","yes");
+    document.getElementById("lockPage").style.display = "none";
+    document.getElementById("registrationPage").style.display = "flex";
+  } else {
+    document.getElementById("lockError").style.display = "block";
+  }
+}
+
+window.addEventListener("load", function(){
+  if(sessionStorage.getItem("registrationUnlocked") === "yes"){
+    document.getElementById("lockPage").style.display = "none";
+    document.getElementById("registrationPage").style.display = "flex";
+  }
+});
+
+document.addEventListener("keydown", function(e){
+  if(e.key === "Enter" && document.getElementById("lockPage").style.display !== "none"){
+    unlockPage();
+  }
+});
 
   function showMessage(text, type) {
     message.textContent = text;
