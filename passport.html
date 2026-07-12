@@ -22,7 +22,10 @@
     h1{margin:0 0 8px;color:var(--maroon);font-size:28px}
     .subtitle{margin:0 0 22px;color:var(--muted);line-height:1.8}
     label{display:block;margin:14px 0 7px;font-weight:bold;color:var(--maroon)}
-    input,textarea{width:100%;padding:13px 14px;border:1px solid #d0d5dd;border-radius:13px;font-size:15px;outline:none;background:#fff}
+    input,textarea{width:100%;max-width:100%;min-width:0;padding:13px 14px;border:1px solid #d0d5dd;border-radius:13px;font-size:15px;outline:none;background:#fff}
+    input[type="date"]{display:block;height:50px;direction:ltr;text-align:right;-webkit-appearance:none;appearance:none}
+    input[type="date"]::-webkit-date-and-time-value{text-align:right;min-height:1.2em}
+    input[type="file"]{overflow:hidden;font-size:14px}
     input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,166,83,.18)}
     textarea{min-height:85px;resize:vertical}
     .photo-help{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
@@ -43,6 +46,8 @@
       .actions{grid-template-columns:1fr}
       .light{grid-column:auto}
       h1{font-size:23px}
+      input,textarea{font-size:16px}
+      input[type="date"]{height:54px}
     }
   </style>
 </head>
@@ -104,7 +109,7 @@
     ctx.fillStyle = '#6b0614';
     ctx.font = 'bold 30px Tahoma';
     ctx.textAlign = 'center';
-    ctx.fillText('تعذر تحميل passport-template.png', canvas.width/2, canvas.height/2);
+    ctx.fillText('تعذر تحميل passport-template.jpeg', canvas.width/2, canvas.height/2);
   };
 
   document.getElementById('childPhoto').addEventListener('change', function(){
@@ -124,10 +129,10 @@
     ctx.drawImage(template,0,0,canvas.width,canvas.height);
   }
 
-  function formatArabicDate(value){
+  function formatPassportDate(value){
     if(!value) return '';
-    const d = new Date(value + 'T00:00:00');
-    return new Intl.DateTimeFormat('ar-AE',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
+    const [year,month,day] = value.split('-');
+    return `${day} / ${month} / ${year}`;
   }
 
   function fitText(text,maxWidth,startSize,minSize=18){
@@ -152,13 +157,13 @@
     ctx.restore();
   }
 
-  function drawField(text,x,y,maxWidth,size=24){
+  function drawField(text,x,y,maxWidth,size=22,options={}){
     ctx.save();
-    ctx.direction='rtl';
-    ctx.textAlign='right';
+    ctx.direction=options.direction || 'rtl';
+    ctx.textAlign=options.align || 'right';
     ctx.textBaseline='middle';
-    ctx.fillStyle='#17364c';
-    const finalSize=fitText(text,maxWidth,size,16);
+    ctx.fillStyle=options.color || '#17364c';
+    const finalSize=fitText(text,maxWidth,size,15);
     ctx.font=`bold ${finalSize}px Tahoma, Arial`;
     ctx.fillText(text,x,y,maxWidth);
     ctx.restore();
@@ -182,11 +187,15 @@
     // صورة الطفل داخل المربع المخصص في الجهة اليسرى.
     drawCoverImage(uploadedPhoto, 86, 132, 166, 222);
 
-    // تعبئة الخطوط الأربعة.
-    drawField(name, 507, 160, 235, 23);
-    drawField(formatArabicDate(dob), 507, 218, 235, 22);
-    drawField(school, 507, 277, 235, 22);
-    drawField(group, 507, 336, 235, 22);
+    // تعبئة البيانات على الخطوط الفارغة من دون تغطية عناوين الحقول.
+    // القيم تنتهي قبل بداية كلمات: الاسم، تاريخ الميلاد، المدرسة، رقم المجموعة.
+    drawField(name, 470, 160, 205, 21);
+    drawField(formatPassportDate(dob), 370, 218, 210, 20, {
+      direction:'ltr',
+      align:'center'
+    });
+    drawField(school, 470, 277, 205, 21);
+    drawField(group, 470, 336, 205, 21);
 
     // الملاحظات في المنطقة السفلية.
     if(notes){
@@ -194,17 +203,17 @@
       ctx.direction='rtl';
       ctx.textAlign='right';
       ctx.fillStyle='#2f596a';
-      ctx.font='bold 20px Tahoma, Arial';
+      ctx.font='bold 18px Tahoma, Arial';
       const words=notes.split(/\s+/);
       const lines=[];
       let line='';
       words.forEach(word=>{
         const test=line ? line+' '+word : word;
-        if(ctx.measureText(test).width>360 && line){ lines.push(line); line=word; }
+        if(ctx.measureText(test).width>320 && line){ lines.push(line); line=word; }
         else line=test;
       });
       if(line) lines.push(line);
-      lines.slice(0,2).forEach((l,i)=>ctx.fillText(l,525,765+i*38,365));
+      lines.slice(0,2).forEach((l,i)=>ctx.fillText(l,520,764+i*36,330));
       ctx.restore();
     }
 
