@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إنشاء جواز سفر عطلتنا غير</title>
+  <style>
+    :root{
+      --maroon:#6b0614;
+      --dark:#32030d;
+      --gold:#d4a653;
+      --bg:#f5f6fa;
+      --text:#1f2937;
+      --muted:#667085;
+      --white:#fff;
+    }
+    *{box-sizing:border-box;font-family:Tahoma,Arial,sans-serif}
+    body{margin:0;background:linear-gradient(135deg,var(--maroon),var(--dark));color:var(--text)}
+    .page{max-width:1400px;margin:auto;padding:24px;display:grid;grid-template-columns:380px 1fr;gap:22px;align-items:start}
+    .panel,.preview-card{background:var(--white);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+    .panel{padding:24px;position:sticky;top:18px}
+    h1{margin:0 0 8px;color:var(--maroon);font-size:28px}
+    .subtitle{margin:0 0 22px;color:var(--muted);line-height:1.8}
+    label{display:block;margin:14px 0 7px;font-weight:bold;color:var(--maroon)}
+    input,textarea{width:100%;padding:13px 14px;border:1px solid #d0d5dd;border-radius:13px;font-size:15px;outline:none;background:#fff}
+    input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,166,83,.18)}
+    textarea{min-height:85px;resize:vertical}
+    .photo-help{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.6}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+    button{border:0;border-radius:14px;padding:14px;font-weight:bold;cursor:pointer;font-size:15px}
+    .primary{background:linear-gradient(135deg,var(--gold),#b88732);color:#fff}
+    .secondary{background:var(--maroon);color:#fff}
+    .light{grid-column:1/-1;background:#eef1f6;color:var(--maroon)}
+    .preview-card{padding:16px;overflow:auto}
+    .preview-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    .preview-title h2{margin:0;color:var(--maroon)}
+    .privacy{font-size:12px;color:var(--muted)}
+    canvas{display:block;width:100%;height:auto;border-radius:16px;border:1px solid #ddd;background:#fff}
+    .error{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#fef3f2;color:#b42318;font-weight:bold}
+    @media(max-width:900px){
+      .page{grid-template-columns:1fr;padding:12px}
+      .panel{position:static}
+      .actions{grid-template-columns:1fr}
+      .light{grid-column:auto}
+      h1{font-size:23px}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="panel">
+      <h1>إنشاء جواز السفر</h1>
+      <p class="subtitle">أدخل بيانات الطفل، ثم اضغط «إنشاء الجواز». تتم معالجة الصورة داخل الجهاز ولا يتم رفعها إلى أي خادم.</p>
+
+      <label for="childName">اسم الطفل</label>
+      <input id="childName" maxlength="36" placeholder="مثال: أحمد محمد علي" />
+
+      <label for="birthDate">تاريخ الميلاد</label>
+      <input id="birthDate" type="date" />
+
+      <label for="school">المدرسة</label>
+      <input id="school" maxlength="38" placeholder="اسم المدرسة" />
+
+      <label for="groupNumber">رقم المجموعة</label>
+      <input id="groupNumber" maxlength="12" placeholder="مثال: 3" />
+
+      <label for="childPhoto">الصورة الشخصية</label>
+      <input id="childPhoto" type="file" accept="image/*" />
+      <div class="photo-help">استخدم صورة أمامية واضحة. سيتم قصها تلقائياً لتناسب مربع الصورة.</div>
+
+      <label for="achievements">إنجازاتي وملاحظاتي (اختياري)</label>
+      <textarea id="achievements" maxlength="100" placeholder="اكتب ملاحظة قصيرة..."></textarea>
+
+      <div id="errorBox" class="error">يرجى تعبئة الاسم، تاريخ الميلاد، المدرسة، رقم المجموعة واختيار صورة.</div>
+
+      <div class="actions">
+        <button class="primary" onclick="generatePassport()">إنشاء الجواز</button>
+        <button class="secondary" onclick="downloadPassport()">تحميل كصورة</button>
+        <button class="light" onclick="printPassport()">طباعة الجواز</button>
+      </div>
+    </section>
+
+    <section class="preview-card">
+      <div class="preview-title">
+        <h2>معاينة الجواز</h2>
+        <span class="privacy">لا تُحفظ البيانات خارج جهازك</span>
+      </div>
+      <canvas id="passportCanvas" width="1280" height="904"></canvas>
+    </section>
+  </main>
+
+<script>
+  const canvas = document.getElementById('passportCanvas');
+  const ctx = canvas.getContext('2d');
+  const template = new Image();
+  template.src = 'passport-template.jpeg';
+  let uploadedPhoto = null;
+  let generated = false;
+
+  template.onload = () => drawTemplate();
+  template.onerror = () => {
+    ctx.fillStyle = '#fff';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = '#6b0614';
+    ctx.font = 'bold 30px Tahoma';
+    ctx.textAlign = 'center';
+    ctx.fillText('تعذر تحميل passport-template.png', canvas.width/2, canvas.height/2);
+  };
+
+  document.getElementById('childPhoto').addEventListener('change', function(){
+    const file = this.files && this.files[0];
+    if(!file){ uploadedPhoto = null; return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => { uploadedPhoto = img; };
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function drawTemplate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(template,0,0,canvas.width,canvas.height);
+  }
+
+  function formatArabicDate(value){
+    if(!value) return '';
+    const d = new Date(value + 'T00:00:00');
+    return new Intl.DateTimeFormat('ar-AE',{day:'2-digit',month:'2-digit',year:'numeric'}).format(d);
+  }
+
+  function fitText(text,maxWidth,startSize,minSize=18){
+    let size=startSize;
+    do{
+      ctx.font = `bold ${size}px Tahoma, Arial`;
+      if(ctx.measureText(text).width <= maxWidth) return size;
+      size--;
+    }while(size>=minSize);
+    return minSize;
+  }
+
+  function drawCoverImage(img,x,y,w,h){
+    const scale=Math.max(w/img.width,h/img.height);
+    const sw=w/scale, sh=h/scale;
+    const sx=(img.width-sw)/2, sy=(img.height-sh)/2;
+    ctx.save();
+    ctx.beginPath();
+    ctx.roundRect(x,y,w,h,12);
+    ctx.clip();
+    ctx.drawImage(img,sx,sy,sw,sh,x,y,w,h);
+    ctx.restore();
+  }
+
+  function drawField(text,x,y,maxWidth,size=24){
+    ctx.save();
+    ctx.direction='rtl';
+    ctx.textAlign='right';
+    ctx.textBaseline='middle';
+    ctx.fillStyle='#17364c';
+    const finalSize=fitText(text,maxWidth,size,16);
+    ctx.font=`bold ${finalSize}px Tahoma, Arial`;
+    ctx.fillText(text,x,y,maxWidth);
+    ctx.restore();
+  }
+
+  function generatePassport(){
+    const name=document.getElementById('childName').value.trim();
+    const dob=document.getElementById('birthDate').value;
+    const school=document.getElementById('school').value.trim();
+    const group=document.getElementById('groupNumber').value.trim();
+    const notes=document.getElementById('achievements').value.trim();
+    const error=document.getElementById('errorBox');
+
+    if(!name || !dob || !school || !group || !uploadedPhoto){
+      error.style.display='block';
+      return;
+    }
+    error.style.display='none';
+    drawTemplate();
+
+    // صورة الطفل داخل المربع المخصص في الجهة اليسرى.
+    drawCoverImage(uploadedPhoto, 86, 132, 166, 222);
+
+    // تعبئة الخطوط الأربعة.
+    drawField(name, 507, 160, 235, 23);
+    drawField(formatArabicDate(dob), 507, 218, 235, 22);
+    drawField(school, 507, 277, 235, 22);
+    drawField(group, 507, 336, 235, 22);
+
+    // الملاحظات في المنطقة السفلية.
+    if(notes){
+      ctx.save();
+      ctx.direction='rtl';
+      ctx.textAlign='right';
+      ctx.fillStyle='#2f596a';
+      ctx.font='bold 20px Tahoma, Arial';
+      const words=notes.split(/\s+/);
+      const lines=[];
+      let line='';
+      words.forEach(word=>{
+        const test=line ? line+' '+word : word;
+        if(ctx.measureText(test).width>360 && line){ lines.push(line); line=word; }
+        else line=test;
+      });
+      if(line) lines.push(line);
+      lines.slice(0,2).forEach((l,i)=>ctx.fillText(l,525,765+i*38,365));
+      ctx.restore();
+    }
+
+    generated=true;
+    canvas.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function downloadPassport(){
+    if(!generated){ generatePassport(); if(!generated) return; }
+    const name=document.getElementById('childName').value.trim() || 'child';
+    const link=document.createElement('a');
+    link.download=`جواز-سفر-${name}.png`;
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  function printPassport(){
+    if(!generated){ generatePassport(); if(!generated) return; }
+    const data=canvas.toDataURL('image/png');
+    const win=window.open('','_blank');
+    win.document.write(`<!doctype html><html dir="rtl"><head><title>طباعة جواز السفر</title><style>body{margin:0;display:flex;justify-content:center;align-items:center;background:white}img{width:100%;height:auto}@page{size:landscape;margin:0}</style></head><body><img src="${data}"><script>window.onload=()=>window.print()<\/script></body></html>`);
+    win.document.close();
+  }
+</script>
+</body>
+</html>
