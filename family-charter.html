@@ -44,7 +44,7 @@
   <main class="page">
     <section class="panel">
       <h1>إنشاء ميثاق الأسرة</h1>
-      <p class="subtitle">أدخل بيانات المشارك وولي الأمر، ثم اضغط «إنشاء الميثاق». تتم معالجة البيانات داخل الجهاز ولا يتم رفعها إلى أي خادم.</p>
+      <p class="subtitle">أدخل بيانات المشارك وولي الأمر، ثم اضغط «إنشاء الميثاق».</p>
 
       <label for="participantName">اسم المشارك</label>
       <input id="participantName" maxlength="32" placeholder="مثال: أحمد محمد" />
@@ -52,7 +52,7 @@
       <label for="participantSignature">توقيع المشارك</label>
       <input id="participantSignature" maxlength="28" placeholder="اكتب الاسم كتوقيع" />
 
-      <label for="participantDate">التاريخ  </label>
+      <label for="participantDate">التاريخ</label>
       <input id="participantDate" type="date" />
 
       <label for="parentName">اسم ولي الأمر</label>
@@ -61,7 +61,7 @@
       <label for="parentSignature">توقيع ولي الأمر</label>
       <input id="parentSignature" maxlength="28" placeholder="اكتب الاسم كتوقيع" />
 
-      <label for="parentDate">التاريخ </label>
+      <label for="parentDate">التاريخ</label>
       <input id="parentDate" type="date" />
 
       <div id="errorBox" class="error">يرجى تعبئة جميع البيانات المطلوبة.</div>
@@ -76,7 +76,6 @@
     <section class="preview-card">
       <div class="preview-title">
         <h2>معاينة ميثاق الأسرة</h2>
-        <span class="privacy">لا تُحفظ البيانات خارج جهازك</span>
       </div>
       <canvas id="charterCanvas" width="960" height="1280"></canvas>
     </section>
@@ -104,7 +103,7 @@
   function formatDate(value){
     if(!value) return '';
     const [year,month,day]=value.split('-');
-    return `${day} / ${month} / ${year}`;
+    return `${day}/${month}/${year}`;
   }
 
   function fitText(text,maxWidth,startSize,minSize=14){
@@ -145,15 +144,15 @@
     error.style.display='none';
     drawTemplate();
 
-    // مربع المشارك على اليمين — وضع القيم في منتصف الخطوط المنقطة
-    drawValue(participantName,760,1066,150,16,'center');
-    drawValue(participantSignature,760,1124,150,15,'center');
-    drawValue(formatDate(participantDate),760,1170,150,14,'center');
+    // مربع المشارك على اليمين — القيم فوق الخطوط المنقطة وبعيدة عن العناوين
+    drawValue(participantName,722,1062,145,14,'center');
+    drawValue(participantSignature,722,1109,145,13,'center');
+    drawValue(formatDate(participantDate),722,1159,145,12,'center');
 
-    // مربع ولي الأمر على اليسار — وضع القيم في منتصف الخطوط المنقطة
-    drawValue(parentName,205,1066,150,16,'center');
-    drawValue(parentSignature,205,1124,150,15,'center');
-    drawValue(formatDate(parentDate),205,1170,150,14,'center');
+    // مربع ولي الأمر على اليسار — القيم فوق الخطوط المنقطة وبعيدة عن العناوين
+    drawValue(parentName,172,1062,120,14,'center');
+    drawValue(parentSignature,172,1109,120,13,'center');
+    drawValue(formatDate(parentDate),172,1159,120,12,'center');
 
     generated=true;
     canvas.scrollIntoView({behavior:'smooth',block:'start'});
