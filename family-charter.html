@@ -52,7 +52,7 @@
       <label for="participantSignature">توقيع المشارك</label>
       <input id="participantSignature" maxlength="28" placeholder="اكتب الاسم كتوقيع" />
 
-      <label for="participantDate">تاريخ المشارك</label>
+      <label for="participantDate">التاريخ  </label>
       <input id="participantDate" type="date" />
 
       <label for="parentName">اسم ولي الأمر</label>
@@ -61,7 +61,7 @@
       <label for="parentSignature">توقيع ولي الأمر</label>
       <input id="parentSignature" maxlength="28" placeholder="اكتب الاسم كتوقيع" />
 
-      <label for="parentDate">تاريخ ولي الأمر</label>
+      <label for="parentDate">التاريخ </label>
       <input id="parentDate" type="date" />
 
       <div id="errorBox" class="error">يرجى تعبئة جميع البيانات المطلوبة.</div>
@@ -119,7 +119,7 @@
 
   function drawValue(text,x,y,maxWidth,size=18,align='right',style='bold'){
     ctx.save();
-    ctx.direction='rtl';
+    ctx.direction = /^\d/.test(text) ? 'ltr' : 'rtl';
     ctx.textAlign=align;
     ctx.textBaseline='middle';
     ctx.fillStyle='#17364c';
@@ -145,15 +145,15 @@
     error.style.display='none';
     drawTemplate();
 
-    // مربع المشارك على اليمين
-    drawValue(participantName,838,1067,150,17,'right');
-    drawValue(participantSignature,838,1126,150,16,'right');
-    drawValue(formatDate(participantDate),838,1171,150,15,'right');
+    // مربع المشارك على اليمين — وضع القيم في منتصف الخطوط المنقطة
+    drawValue(participantName,760,1066,150,16,'center');
+    drawValue(participantSignature,760,1124,150,15,'center');
+    drawValue(formatDate(participantDate),760,1170,150,14,'center');
 
-    // مربع ولي الأمر على اليسار
-    drawValue(parentName,286,1067,150,17,'right');
-    drawValue(parentSignature,286,1126,150,16,'right');
-    drawValue(formatDate(parentDate),286,1171,150,15,'right');
+    // مربع ولي الأمر على اليسار — وضع القيم في منتصف الخطوط المنقطة
+    drawValue(parentName,205,1066,150,16,'center');
+    drawValue(parentSignature,205,1124,150,15,'center');
+    drawValue(formatDate(parentDate),205,1170,150,14,'center');
 
     generated=true;
     canvas.scrollIntoView({behavior:'smooth',block:'start'});
