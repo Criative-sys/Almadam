@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>إنشاء ميثاق الأسرة</title>
+  <style>
+    :root{--maroon:#6b0614;--dark:#32030d;--gold:#d4a653;--bg:#f5f6fa;--text:#1f2937;--muted:#667085;--white:#fff}
+    *{box-sizing:border-box;font-family:Tahoma,Arial,sans-serif}
+    body{margin:0;background:linear-gradient(135deg,var(--maroon),var(--dark));color:var(--text)}
+    .page{max-width:1400px;margin:auto;padding:24px;display:grid;grid-template-columns:380px 1fr;gap:22px;align-items:start}
+    .panel,.preview-card{background:var(--white);border-radius:24px;box-shadow:0 20px 60px rgba(0,0,0,.28)}
+    .panel{padding:24px;position:sticky;top:18px}
+    h1{margin:0 0 8px;color:var(--maroon);font-size:28px}
+    .subtitle{margin:0 0 22px;color:var(--muted);line-height:1.8}
+    label{display:block;margin:14px 0 7px;font-weight:bold;color:var(--maroon)}
+    input{width:100%;padding:13px 14px;border:1px solid #d0d5dd;border-radius:13px;font-size:15px;outline:none;background:#fff}
+    input[type="date"]{display:block;height:50px;direction:ltr;text-align:right;-webkit-appearance:none;appearance:none}
+    input[type="date"]::-webkit-date-and-time-value{text-align:right;min-height:1.2em}
+    input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,166,83,.18)}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+    button{border:0;border-radius:14px;padding:14px;font-weight:bold;cursor:pointer;font-size:15px}
+    .primary{background:linear-gradient(135deg,var(--gold),#b88732);color:#fff}
+    .secondary{background:var(--maroon);color:#fff}
+    .light{grid-column:1/-1;background:#eef1f6;color:var(--maroon)}
+    .preview-card{padding:16px;overflow:auto}
+    .preview-title{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+    .preview-title h2{margin:0;color:var(--maroon)}
+    .privacy{font-size:12px;color:var(--muted)}
+    canvas{display:block;width:100%;height:auto;border-radius:16px;border:1px solid #ddd;background:#fff}
+    .error{display:none;margin-top:12px;padding:12px;border-radius:12px;background:#fef3f2;color:#b42318;font-weight:bold}
+    @media(max-width:900px){
+      .page{grid-template-columns:1fr;padding:12px}
+      .panel{position:static}
+      .actions{grid-template-columns:1fr}
+      .light{grid-column:auto}
+      h1{font-size:23px}
+      input{font-size:16px}
+      input[type="date"]{height:54px}
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="panel">
+      <h1>إنشاء ميثاق الأسرة</h1>
+      <p class="subtitle">أدخل بيانات المشارك وولي الأمر، ثم اضغط «إنشاء الميثاق». تتم معالجة البيانات داخل الجهاز ولا يتم رفعها إلى أي خادم.</p>
+
+      <label for="participantName">اسم المشارك</label>
+      <input id="participantName" maxlength="32" placeholder="مثال: أحمد محمد" />
+
+      <label for="participantSignature">توقيع المشارك</label>
+      <input id="participantSignature" maxlength="28" placeholder="اكتب الاسم كتوقيع" />
+
+      <label for="participantDate">تاريخ المشارك</label>
+      <input id="participantDate" type="date" />
+
+      <label for="parentName">اسم ولي الأمر</label>
+      <input id="parentName" maxlength="32" placeholder="مثال: محمد علي" />
+
+      <label for="parentSignature">توقيع ولي الأمر</label>
+      <input id="parentSignature" maxlength="28" placeholder="اكتب الاسم كتوقيع" />
+
+      <label for="parentDate">تاريخ ولي الأمر</label>
+      <input id="parentDate" type="date" />
+
+      <div id="errorBox" class="error">يرجى تعبئة جميع البيانات المطلوبة.</div>
+
+      <div class="actions">
+        <button class="primary" onclick="generateCharter()">إنشاء الميثاق</button>
+        <button class="secondary" onclick="downloadCharter()">تحميل كصورة</button>
+        <button class="light" onclick="printCharter()">طباعة الميثاق</button>
+      </div>
+    </section>
+
+    <section class="preview-card">
+      <div class="preview-title">
+        <h2>معاينة ميثاق الأسرة</h2>
+        <span class="privacy">لا تُحفظ البيانات خارج جهازك</span>
+      </div>
+      <canvas id="charterCanvas" width="960" height="1280"></canvas>
+    </section>
+  </main>
+
+<script>
+  const canvas = document.getElementById('charterCanvas');
+  const ctx = canvas.getContext('2d');
+  const template = new Image();
+  template.src = 'family-charter-template.png';
+  let generated = false;
+
+  template.onload = drawTemplate;
+  template.onerror = () => {
+    ctx.fillStyle='#fff'; ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle='#6b0614'; ctx.font='bold 28px Tahoma'; ctx.textAlign='center';
+    ctx.fillText('تعذر تحميل family-charter-template.png',canvas.width/2,canvas.height/2);
+  };
+
+  function drawTemplate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.drawImage(template,0,0,canvas.width,canvas.height);
+  }
+
+  function formatDate(value){
+    if(!value) return '';
+    const [year,month,day]=value.split('-');
+    return `${day} / ${month} / ${year}`;
+  }
+
+  function fitText(text,maxWidth,startSize,minSize=14){
+    let size=startSize;
+    do{
+      ctx.font=`bold ${size}px Tahoma, Arial`;
+      if(ctx.measureText(text).width<=maxWidth) return size;
+      size--;
+    }while(size>=minSize);
+    return minSize;
+  }
+
+  function drawValue(text,x,y,maxWidth,size=18,align='right',style='bold'){
+    ctx.save();
+    ctx.direction='rtl';
+    ctx.textAlign=align;
+    ctx.textBaseline='middle';
+    ctx.fillStyle='#17364c';
+    const finalSize=fitText(text,maxWidth,size,13);
+    ctx.font=`${style} ${finalSize}px Tahoma, Arial`;
+    ctx.fillText(text,x,y,maxWidth);
+    ctx.restore();
+  }
+
+  function generateCharter(){
+    const participantName=document.getElementById('participantName').value.trim();
+    const participantSignature=document.getElementById('participantSignature').value.trim();
+    const participantDate=document.getElementById('participantDate').value;
+    const parentName=document.getElementById('parentName').value.trim();
+    const parentSignature=document.getElementById('parentSignature').value.trim();
+    const parentDate=document.getElementById('parentDate').value;
+    const error=document.getElementById('errorBox');
+
+    if(!participantName || !participantSignature || !participantDate || !parentName || !parentSignature || !parentDate){
+      error.style.display='block';
+      return;
+    }
+    error.style.display='none';
+    drawTemplate();
+
+    // مربع المشارك على اليمين
+    drawValue(participantName,838,1067,150,17,'right');
+    drawValue(participantSignature,838,1126,150,16,'right');
+    drawValue(formatDate(participantDate),838,1171,150,15,'right');
+
+    // مربع ولي الأمر على اليسار
+    drawValue(parentName,286,1067,150,17,'right');
+    drawValue(parentSignature,286,1126,150,16,'right');
+    drawValue(formatDate(parentDate),286,1171,150,15,'right');
+
+    generated=true;
+    canvas.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+
+  function downloadCharter(){
+    if(!generated){generateCharter(); if(!generated) return;}
+    const name=document.getElementById('participantName').value.trim() || 'participant';
+    const link=document.createElement('a');
+    link.download=`ميثاق-الأسرة-${name}.png`;
+    link.href=canvas.toDataURL('image/png');
+    link.click();
+  }
+
+  function printCharter(){
+    if(!generated){generateCharter(); if(!generated) return;}
+    const data=canvas.toDataURL('image/png');
+    const win=window.open('','_blank');
+    win.document.write(`<!doctype html><html dir="rtl"><head><title>طباعة ميثاق الأسرة</title><style>body{margin:0;display:flex;justify-content:center;background:white}img{max-width:100%;height:auto}@page{size:A4 portrait;margin:0}</style></head><body><img src="${data}"><script>window.onload=()=>window.print()<\/script></body></html>`);
+    win.document.close();
+  }
+
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Enter' && document.activeElement.tagName!=='BUTTON') generateCharter();
+  });
+</script>
+</body>
+</html>
